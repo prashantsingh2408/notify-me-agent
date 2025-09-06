@@ -117,12 +117,21 @@
                          <a href="#use-cases" class="nav-link px-4 py-2.5 rounded-xl text-sm font-medium text-[var(--text-color)]/80 hover:text-[var(--text-color)] hover:bg-white/10 transition-all duration-300 backdrop-blur-sm">Use Cases</a>
                          <a href="#features" class="nav-link px-4 py-2.5 rounded-xl text-sm font-medium text-[var(--text-color)]/80 hover:text-[var(--text-color)] hover:bg-white/10 transition-all duration-300 backdrop-blur-sm">Capabilities</a>
                      </div>
-                     <div class="relative theme-btn-wrapper ml-3">
+                     <div class="flex items-center space-x-2">
+                         <!-- Settings Button -->
                          <button 
-                             onclick="toggleThemeDropdown()"
-                             class="theme-btn w-12 h-12 rounded-xl transition-all duration-300 hover:scale-105 flex items-center justify-center bg-white/10 backdrop-blur-sm hover:bg-white/20 shadow-lg hover:shadow-xl border border-white/20">
-                             <i class="fas fa-palette text-xl text-[var(--text-color)]"></i>
+                             onclick="openSettingsModal()"
+                             class="w-12 h-12 rounded-xl transition-all duration-300 hover:scale-105 flex items-center justify-center bg-white/10 backdrop-blur-sm hover:bg-white/20 shadow-lg hover:shadow-xl border border-white/20">
+                             <i class="fas fa-cog text-xl text-[var(--text-color)]"></i>
                          </button>
+                         
+                         <!-- Theme Button -->
+                         <div class="relative theme-btn-wrapper">
+                             <button 
+                                 onclick="toggleThemeDropdown()"
+                                 class="theme-btn w-12 h-12 rounded-xl transition-all duration-300 hover:scale-105 flex items-center justify-center bg-white/10 backdrop-blur-sm hover:bg-white/20 shadow-lg hover:shadow-xl border border-white/20">
+                                 <i class="fas fa-palette text-xl text-[var(--text-color)]"></i>
+                             </button>
                         
                         <!-- Theme Dropdown -->
                         <div id="theme-dropdown" class="hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-[var(--bg-color)] border border-[var(--border-color)]">
@@ -550,6 +559,108 @@
                      <button onclick="createAlert()" class="bg-gradient-to-r from-[var(--accent-color)] to-[var(--accent-dark)] text-white px-8 py-3 rounded-xl font-medium hover:shadow-lg transition-all duration-300 flex items-center justify-center">
                          <i class="fas fa-plus mr-2"></i>
                          Create Alert
+                     </button>
+                 </div>
+             </div>
+         </div>
+     </div>
+
+     <!-- Settings Modal -->
+     <div id="settings-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center hidden z-[9999]">
+         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+             <!-- Settings Header -->
+             <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                 <div class="flex items-center justify-between">
+                     <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Settings</h3>
+                     <button onclick="closeSettingsModal()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300">
+                         <i class="fas fa-times text-lg"></i>
+                     </button>
+                 </div>
+             </div>
+             
+             <!-- Settings Content -->
+             <div class="p-6 space-y-6">
+                 <!-- Default Email Setting -->
+                 <div>
+                     <label class="block text-sm font-bold text-gray-800 dark:text-gray-200 mb-3">
+                         <i class="fas fa-envelope mr-2 text-[var(--accent-color)]"></i>
+                         Default Email Address
+                     </label>
+                     <div class="space-y-3">
+                         <input 
+                             id="default-email-input" 
+                             type="email" 
+                             placeholder="Enter your email address..."
+                             class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-[var(--accent-color)] focus:border-[var(--accent-color)] transition-all duration-300"
+                         />
+                         <p class="text-xs text-gray-500 dark:text-gray-400">This email will be used for all email notifications</p>
+                         <div id="email-saved-indicator" class="hidden mt-2 p-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                             <p class="text-xs text-green-700 dark:text-green-300 flex items-center">
+                                 <i class="fas fa-check-circle mr-1"></i>
+                                 Email saved and will persist across browser sessions
+                             </p>
+                         </div>
+                     </div>
+                 </div>
+                 
+                 <!-- Default WhatsApp Setting -->
+                 <div>
+                     <label class="block text-sm font-bold text-gray-800 dark:text-gray-200 mb-3">
+                         <i class="fab fa-whatsapp mr-2 text-green-500"></i>
+                         Default WhatsApp Number
+                     </label>
+                     <div class="space-y-3">
+                         <input 
+                             id="default-whatsapp-input" 
+                             type="tel" 
+                             placeholder="Enter your WhatsApp number..."
+                             class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-[var(--accent-color)] focus:border-[var(--accent-color)] transition-all duration-300"
+                         />
+                         <p class="text-xs text-gray-500 dark:text-gray-400">Include country code (e.g., +91 9876543210)</p>
+                         <div id="whatsapp-saved-indicator" class="hidden mt-2 p-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                             <p class="text-xs text-green-700 dark:text-green-300 flex items-center">
+                                 <i class="fas fa-check-circle mr-1"></i>
+                                 WhatsApp number saved and will persist across browser sessions
+                             </p>
+                         </div>
+                     </div>
+                 </div>
+                 
+                 <!-- Notification Preferences -->
+                 <div>
+                     <label class="block text-sm font-bold text-gray-800 dark:text-gray-200 mb-3">
+                         <i class="fas fa-bell mr-2 text-[var(--accent-color)]"></i>
+                         Default Notification Preferences
+                     </label>
+                     <div class="space-y-3">
+                         <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-xl">
+                             <div>
+                                 <p class="text-sm font-medium text-gray-800 dark:text-gray-200">Sound Notifications</p>
+                                 <p class="text-xs text-gray-500 dark:text-gray-400">Play sound when alerts are triggered</p>
+                             </div>
+                             <label class="relative inline-flex items-center cursor-pointer">
+                                 <input type="checkbox" class="sr-only peer" checked>
+                                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[var(--accent-color)]/25 dark:peer-focus:ring-[var(--accent-color)]/25 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[var(--accent-color)]"></div>
+                             </label>
+                         </div>
+                         <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-xl">
+                             <div>
+                                 <p class="text-sm font-medium text-gray-800 dark:text-gray-200">Email Summaries</p>
+                                 <p class="text-xs text-gray-500 dark:text-gray-400">Receive daily summary of all alerts</p>
+                             </div>
+                             <label class="relative inline-flex items-center cursor-pointer">
+                                 <input type="checkbox" class="sr-only peer" checked>
+                                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[var(--accent-color)]/25 dark:peer-focus:ring-[var(--accent-color)]/25 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[var(--accent-color)]"></div>
+                             </label>
+                         </div>
+                     </div>
+                 </div>
+                 
+                 <!-- Save Settings Button -->
+                 <div class="flex justify-center pt-4">
+                     <button onclick="saveSettings()" class="bg-gradient-to-r from-[var(--accent-color)] to-[var(--accent-dark)] text-white px-8 py-3 rounded-xl font-medium hover:shadow-lg transition-all duration-300 flex items-center justify-center">
+                         <i class="fas fa-save mr-2"></i>
+                         Save Settings
                      </button>
                  </div>
              </div>
@@ -1478,12 +1589,34 @@
              const selectedCron = document.querySelector('.cron-option.border-\\[var\\(--accent-color\\)\\]');
              
              if (!alertText.trim()) {
-                 showNotification('Please enter an alert description.', 'warning');
+                 showNotification('Please enter an action description.', 'warning');
                  return;
              }
              
              if (selectedMethods.length === 0) {
                  showNotification('Please select at least one notification method.', 'warning');
+                 return;
+             }
+             
+             // Check if default email is set when email is selected
+             const defaultEmail = localStorage.getItem('notifyMe_defaultEmail');
+             if (selectedMethods.includes('email') && !defaultEmail) {
+                 showNotification('Please set your default email address in Settings first.', 'warning');
+                 setTimeout(() => {
+                     closeAlertModal();
+                     openSettingsModal();
+                 }, 1500);
+                 return;
+             }
+             
+             // Check if default WhatsApp is set when WhatsApp is selected
+             const defaultWhatsApp = localStorage.getItem('notifyMe_defaultWhatsApp');
+             if (selectedMethods.includes('whatsapp') && !defaultWhatsApp) {
+                 showNotification('Please set your default WhatsApp number in Settings first.', 'warning');
+                 setTimeout(() => {
+                     closeAlertModal();
+                     openSettingsModal();
+                 }, 1500);
                  return;
              }
              
@@ -1656,11 +1789,80 @@
              input.value = '';
          }
 
+         // Settings modal functions
+         function openSettingsModal() {
+             const modal = document.getElementById('settings-modal');
+             modal.classList.remove('hidden');
+             
+             // Load saved settings
+             loadSettings();
+         }
+
+         function closeSettingsModal() {
+             const modal = document.getElementById('settings-modal');
+             modal.classList.add('hidden');
+         }
+
+         function saveSettings() {
+             const email = document.getElementById('default-email-input').value;
+             const whatsapp = document.getElementById('default-whatsapp-input').value;
+             
+             if (!email && !whatsapp) {
+                 showNotification('Please enter at least your email address.', 'warning');
+                 return;
+             }
+             
+             // Validate email format
+             if (email && !isValidEmail(email)) {
+                 showNotification('Please enter a valid email address.', 'warning');
+                 return;
+             }
+             
+             // Save to localStorage
+             if (email) {
+                 localStorage.setItem('notifyMe_defaultEmail', email);
+                 document.getElementById('email-saved-indicator').classList.remove('hidden');
+             }
+             if (whatsapp) {
+                 localStorage.setItem('notifyMe_defaultWhatsApp', whatsapp);
+                 document.getElementById('whatsapp-saved-indicator').classList.remove('hidden');
+             }
+             
+             showNotification('Settings saved to browser storage and will persist!', 'success');
+             
+             // Close modal after showing persistence message
+             setTimeout(() => {
+                 closeSettingsModal();
+             }, 2000);
+         }
+
+         function isValidEmail(email) {
+             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+             return emailRegex.test(email);
+         }
+
+         function loadSettings() {
+             const email = localStorage.getItem('notifyMe_defaultEmail');
+             const whatsapp = localStorage.getItem('notifyMe_defaultWhatsApp');
+             
+             if (email) {
+                 document.getElementById('default-email-input').value = email;
+                 document.getElementById('email-saved-indicator')?.classList.remove('hidden');
+             }
+             if (whatsapp) {
+                 document.getElementById('default-whatsapp-input').value = whatsapp;
+                 document.getElementById('whatsapp-saved-indicator')?.classList.remove('hidden');
+             }
+         }
+
          // Start typewriter effect when page loads
          document.addEventListener('DOMContentLoaded', function() {
              setTimeout(() => {
                  startTypewriterEffect();
              }, 2000); // Start after 2 seconds
+             
+             // Load settings on page load
+             loadSettings();
          });
      </script>
 
