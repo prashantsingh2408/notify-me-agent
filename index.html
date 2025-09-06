@@ -249,7 +249,7 @@
                 <!-- Mobile Menu Button -->
                 <div class="md:hidden">
                     <button onclick="toggleMenu()" class="mobile-menu-btn p-2 rounded-lg transition-all duration-300">
-                        <i class="fas fa-bars text-2xl"></i>
+                        <i class="fas fa-bars text-2xl text-[var(--text-color)]"></i>
                     </button>
                 </div>
             </div>
@@ -308,7 +308,7 @@
                 </button>
                 <button onclick="applyTheme('forest')"
                     class="theme-btn w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-color)] border-2 shadow-md"
-                    style="border-color: var (--text-color)">
+                    style="border-color: var(--text-color)">
                     <i class="fas fa-tree text-xl"></i>
                 </button>
 
@@ -356,28 +356,33 @@
                     <i class="fas fa-leaf text-xl"></i>
                 </button>
             </div>
-             <!-- Mobile Search Input -->
-             <div class="px-4 py-4 border-b border-[var(--border-color)]">
-                 <div class="relative">
-                     <input 
-                         id="mobile-notify-search" 
-                         type="text" 
-                         placeholder="Notify me when..." 
-                         class="w-full px-4 py-3 text-base rounded-full border-2 border-[var(--border-color)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)] focus:border-[var(--accent-color)] bg-[var(--bg-color)] text-[var(--text-color)] transition-all duration-300" 
-                     />
-                     <button class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-[var(--accent-color)] text-[var(--bg-color)] p-2 rounded-full hover:bg-[var(--accent-dark)] transition-all duration-300">
-                         <i class="fas fa-search text-sm"></i>
-                     </button>
-                 </div>
-             </div>
-             
-             <!-- Mobile menu items -->
-             <div class="py-2">
-                 <a href="#notifications" class="block text-[var(--text-color)] hover:text-[var(--accent-color)] px-4 py-2">My Alerts</a>
-                 <a href="#use-cases" class="block text-[var(--text-color)] hover:text-[var(--accent-color)] px-4 py-2">Use Cases</a>
-                 <a href="#features" class="block text-[var(--text-color)] hover:text-[var(--accent-color)] px-4 py-2">Features</a>
-             </div>
-         </div>
+            
+            <!-- Mobile Search Input -->
+            <div class="px-4 py-4 border-b border-[var(--border-color)]">
+                <div class="relative">
+                    <input 
+                        id="mobile-notify-search" 
+                        type="text" 
+                        placeholder="Notify me when..." 
+                        class="w-full px-4 py-3 text-base rounded-full border-2 border-[var(--border-color)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)] focus:border-[var(--accent-color)] bg-[var(--bg-color)] text-[var(--text-color)] transition-all duration-300" 
+                    />
+                    <button class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-[var(--accent-color)] text-[var(--bg-color)] p-2 rounded-full hover:bg-[var(--accent-dark)] transition-all duration-300">
+                        <i class="fas fa-search text-sm"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile menu items -->
+            <div class="py-2">
+                <a href="#notifications" class="block text-[var(--text-color)] hover:text-[var(--accent-color)] px-4 py-2">My Alerts</a>
+                <a href="#create-alert" class="block text-[var(--text-color)] hover:text-[var(--accent-color)] px-4 py-2">Create Alert</a>
+                <a href="#use-cases" class="block text-[var(--text-color)] hover:text-[var(--accent-color)] px-4 py-2">Use Cases</a>
+                <a href="#features" class="block text-[var(--text-color)] hover:text-[var(--accent-color)] px-4 py-2">Features</a>
+                <button onclick="openSettingsModal()" class="block w-full text-left text-[var(--text-color)] hover:text-[var(--accent-color)] px-4 py-2">
+                    <i class="fas fa-cog mr-2"></i>Settings
+                </button>
+            </div>
+        </div>
      </nav>
 
      <!-- Alert Creation Modal -->
@@ -678,13 +683,38 @@
                  <p class="text-xl md:text-2xl text-[var(--text-color)] max-w-3xl mx-auto mb-8 animate-slide-up opacity-80 leading-relaxed">
                      Your eyes on the web. Don't search, get alerted. The web changes. You know first.
                  </p>
-                 <div class="animate-slide-up">
-                     <button onclick="openAlertModal('Enter your alert description here...')" 
-                     class="btn-primary px-8 py-4 rounded-xl inline-flex items-center text-lg font-semibold bg-[var(--accent-color)] text-[var(--bg-color)] shadow-lg hover:bg-[var(--accent-dark)] hover:scale-105 transition-all duration-300 animate-pulse-slow">
-                         Create Your First Alert
-                         <i class="fas fa-bell ml-3"></i>
-                     </button>
-                 </div>
+                <div class="animate-slide-up space-y-6">
+                    <button onclick="openAlertModal('Enter your alert description here...')" 
+                    class="btn-primary px-8 py-4 rounded-xl inline-flex items-center text-lg font-semibold bg-[var(--accent-color)] text-[var(--bg-color)] shadow-lg hover:bg-[var(--accent-dark)] hover:scale-105 transition-all duration-300 animate-pulse-slow">
+                        Create Your First Alert
+                        <i class="fas fa-bell ml-3"></i>
+                    </button>
+                    
+                    <!-- NotebookLM Video Player -->
+                    <div class="mt-8">
+                        <div class="max-w-4xl mx-auto">
+                            <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-2xl">
+                                <div class="text-center mb-4">
+                                    <p class="text-[var(--text-color)]/75">How it works</p>
+                                </div>
+                                <div class="relative rounded-xl overflow-hidden shadow-lg">
+                                    <video 
+                                        id="demo-video"
+                                        class="w-full h-auto rounded-xl"
+                                        controls
+                                        poster=""
+                                        preload="metadata"
+                                        style="max-height: 500px; object-fit: contain;">
+                                        <source src="notebooklm.mp4" type="video/mp4">
+                                        <p class="text-[var(--text-color)] p-4 text-center">Your browser does not support the video tag. 
+                                           <a href="notebooklm.mp4" class="text-[var(--accent-color)] underline">Download the video</a> instead.
+                                        </p>
+                                    </video>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
              </div>
         </div>
     </section>
@@ -1855,15 +1885,45 @@
              }
          }
 
-         // Start typewriter effect when page loads
-         document.addEventListener('DOMContentLoaded', function() {
-             setTimeout(() => {
-                 startTypewriterEffect();
-             }, 2000); // Start after 2 seconds
-             
-             // Load settings on page load
-             loadSettings();
-         });
+        // Mobile menu toggle
+        function toggleMenu() {
+            console.log('Toggle menu clicked'); // Debug log
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenu) {
+                mobileMenu.classList.toggle('hidden');
+                console.log('Mobile menu toggled. Hidden:', mobileMenu.classList.contains('hidden')); // Debug log
+            } else {
+                console.log('Mobile menu element not found'); // Debug log
+            }
+        }
+
+
+        // Start typewriter effect when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                startTypewriterEffect();
+            }, 2000); // Start after 2 seconds
+            
+            // Load settings on page load
+            loadSettings();
+            
+            // Add video event listeners
+            const video = document.getElementById('demo-video');
+            if (video) {
+                video.addEventListener('loadstart', function() {
+                    console.log('Video loading started');
+                });
+                
+                video.addEventListener('error', function(e) {
+                    console.error('Video error:', e);
+                    showNotification('Error loading video. Please check if the file exists.', 'error');
+                });
+                
+                video.addEventListener('play', function() {
+                    console.log('Video started playing');
+                });
+            }
+        });
      </script>
 
     <!-- Modal Notification (add just after <body>) -->
