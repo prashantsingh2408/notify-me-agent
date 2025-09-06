@@ -1,0 +1,31 @@
+/* animations.css */
+@keyframes dropdownFade {
+    from {
+        opacity: 0;
+        transform: translateY(-2px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes themeSelect {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0.95);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+#theme-dropdown {
+    animation: dropdownFade 0.4s ease;
+}
+
+.theme-selected {
+    animation: themeSelect 0.4s ease;
+}

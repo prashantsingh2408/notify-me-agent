@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NotifyMe - Smart Notification Agent</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Core CSS -->
+    <script src="js/tailwind-config.js"></script>
+    <link rel="stylesheet" href="styles/core/base.css">
+    <link rel="stylesheet" href="styles/core/color-themes.css">
+    <link rel="stylesheet" href="styles/core/components.css">
+    <link rel="stylesheet" href="styles/core/layout.css">
+    
+    <!-- Site Specific CSS -->
+    <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="styles/drone-styles.css">
+    
+    <!-- Core JS -->
+    <script type="module" src="js/core/main.js"></script>
+    <script type="module" src="js/core/ui.js"></script>
+
+    <!-- Site Specific JS -->
+    <script type="module" src="js/labs.js"></script> <!-- Load data from labs.json as module -->
+    <script type="module" src="js/rain.js"></script>
+    <script type="module" src="js/documents.js"></script>
+</head>
+<body class="bg-[var(--bg-color)] font-sans">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loading-spinner"></div>
+    </div>
+    
+    <!-- Scroll Progress Bar -->
+    <div id="scroll-progress"></div>
+    
+ 
+    
+     <!-- Navbar -->
+     <nav class="fixed w-full top-0 transition-all duration-300 backdrop-blur-md" id="main-nav" style="z-index: 1000; position: fixed; overflow: visible; background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%), var(--bg-color); border-bottom: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+         <div class="max-w-7xl mx-auto px-6 relative" style="overflow: visible;">
+             <!-- Main Navigation Row -->
+             <div class="flex items-center justify-between h-20">
+                 <!-- Logo -->
+                 <div class="flex items-center flex-shrink-0">
+                     <a href="#" class="flex items-center space-x-3 group">
+                         <div class="relative">
+                             <div class="w-12 h-12 bg-gradient-to-br from-[var(--accent-color)] to-[var(--accent-dark)] rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                                 <i class="fas fa-bell text-white text-xl"></i>
+                             </div>
+                             <div class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-pulse"></div>
+                         </div>
+                         <div class="flex flex-col">
+                             <span class="font-bold text-2xl bg-gradient-to-r from-[var(--accent-color)] to-[var(--accent-dark)] bg-clip-text text-transparent">NotifyMe</span>
+                             <span class="text-xs text-[var(--text-color)]/60 font-medium">Smart Alerts</span>
+                         </div>
+                     </a>
+                 </div>
+                 
+                 <!-- Main Search Input in Header -->
+                 <div class="flex-1 max-w-lg mx-6 hidden md:block" style="z-index: 1002; position: relative; overflow: visible;">
+                     <div class="relative">
+                         <input 
+                             id="header-notify-search" 
+                             type="text" 
+                             placeholder="Notify me when..." 
+                             class="w-full px-6 py-3.5 text-base rounded-2xl border-0 focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)]/50 bg-white/10 backdrop-blur-sm text-[var(--text-color)] placeholder-[var(--text-color)]/50 shadow-lg transition-all duration-300 hover:bg-white/15" 
+                             onfocus="showHeaderSuggestions()"
+                             onblur="hideHeaderSuggestions()"
+                             oninput="handleTypingSuggestions(this.value)"
+                             onkeypress="handleEnterKey(event)"
+                             style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);"
+                         />
+                         <button class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-[var(--accent-color)] to-[var(--accent-dark)] text-white p-3 rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105" onclick="createAlertFromSearch()">
+                             <div class="relative">
+                                 <i class="fas fa-bell text-base"></i>
+                                 <i class="fas fa-plus text-xs absolute -top-1 -right-1"></i>
+                             </div>
+                         </button>
+                         
+                         <!-- Header Suggestions Dropdown - Inside search container -->
+                         <div id="header-suggestions" class="absolute top-full left-0 right-0 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl mt-2 hidden border border-gray-200 dark:border-gray-700" style="z-index: 10000;">
+                             <div class="p-4">
+                                 <div id="dynamic-suggestions" class="space-y-2">
+                                     <!-- Dynamic suggestions will be populated here -->
+                                 </div>
+                                 <div class="border-t border-gray-200 dark:border-gray-700 mt-3 pt-3">
+                                     <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Quick suggestions:</p>
+                                     <div class="flex flex-wrap gap-2">
+                                         <button class="suggestion-btn bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 hover:border-[var(--accent-color)] hover:bg-[var(--accent-color)]/10 text-gray-800 dark:text-gray-200 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 flex items-center">
+                                             <i class="fas fa-chart-line mr-1.5 text-green-500 text-xs"></i>Stock alerts
+                                         </button>
+                                         <button class="suggestion-btn bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 hover:border-[var(--accent-color)] hover:bg-[var(--accent-color)]/10 text-gray-800 dark:text-gray-200 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 flex items-center">
+                                             <i class="fas fa-newspaper mr-1.5 text-blue-500 text-xs"></i>News
+                                         </button>
+                                         <button class="suggestion-btn bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 hover:border-[var(--accent-color)] hover:bg-[var(--accent-color)]/10 text-gray-800 dark:text-gray-200 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 flex items-center">
+                                             <i class="fas fa-bitcoin-sign mr-1.5 text-yellow-500 text-xs"></i>Crypto
+                                         </button>
+                                         <button class="suggestion-btn bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 hover:border-[var(--accent-color)] hover:bg-[var(--accent-color)]/10 text-gray-800 dark:text-gray-200 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 flex items-center">
+                                             <i class="fas fa-cloud-rain mr-1.5 text-cyan-500 text-xs"></i>Weather
+                                         </button>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+                 
+                <!-- Navigation Menu -->
+                <div class="hidden md:flex items-center space-x-2 flex-shrink-0">
+                     <div class="flex items-center space-x-1">
+                         <a href="#notifications" class="nav-link px-4 py-2.5 rounded-xl text-sm font-medium text-[var(--text-color)]/80 hover:text-[var(--text-color)] hover:bg-white/10 transition-all duration-300 backdrop-blur-sm">My Alerts</a>
+                         <a href="#create-alert" class="nav-link px-4 py-2.5 rounded-xl text-sm font-medium text-[var(--text-color)]/80 hover:text-[var(--text-color)] hover:bg-white/10 transition-all duration-300 backdrop-blur-sm">Create Alert</a>
+                         <a href="#use-cases" class="nav-link px-4 py-2.5 rounded-xl text-sm font-medium text-[var(--text-color)]/80 hover:text-[var(--text-color)] hover:bg-white/10 transition-all duration-300 backdrop-blur-sm">Use Cases</a>
+                         <a href="#features" class="nav-link px-4 py-2.5 rounded-xl text-sm font-medium text-[var(--text-color)]/80 hover:text-[var(--text-color)] hover:bg-white/10 transition-all duration-300 backdrop-blur-sm">Features</a>
+                     </div>
+                     <div class="relative theme-btn-wrapper ml-3">
+                         <button 
+                             onclick="toggleThemeDropdown()"
+                             class="theme-btn w-12 h-12 rounded-xl transition-all duration-300 hover:scale-105 flex items-center justify-center bg-white/10 backdrop-blur-sm hover:bg-white/20 shadow-lg hover:shadow-xl border border-white/20">
+                             <i class="fas fa-palette text-xl text-[var(--text-color)]"></i>
+                         </button>
+                        
+                        <!-- Theme Dropdown -->
+                        <div id="theme-dropdown" class="hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-[var(--bg-color)] border border-[var(--border-color)]">
+                            <!-- Auto Theme Option (First Group) -->
+                            <div class="theme-group">
+                                <div class="theme-group-title">Auto Mode</div>
+                                <button onclick="applyTheme('auto')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
+                                    <i class="fas fa-sync-alt w-8"></i>
+                                    <span>Auto Theme</span>
+                                </button>
+                            </div>
+
+                            <!-- Separator -->
+                            <div class="border-b border-[var(--border-color)]"></div>
+
+                            <!-- Rest of your theme groups -->
+                            <div class="theme-group">
+                                <div class="theme-group-title">Dark Themes</div>
+                                <button onclick="applyTheme('dark')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
+                                    <i class="fas fa-moon w-8"></i>
+                                    <span>Dark Theme</span>
+                                </button>
+                                <button onclick="applyTheme('dark-2')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
+                                    <i class="fas fa-circle w-8"></i>
+                                    <span>Dark Theme 2</span>
+                                </button>
+                            </div>
+                            
+                            <div class="theme-group">
+                                <div class="theme-group-title">Cool Colors</div>
+                                <button onclick="applyTheme('blue')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
+                                    <i class="fas fa-water w-8"></i>
+                                    <span>Blue Theme</span>
+                                </button>
+                                <button onclick="applyTheme('ocean')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
+                                    <i class="fas fa-wave-square w-8"></i>
+                                    <span>Ocean Theme</span>
+                                </button>
+                                <button onclick="applyTheme('purple')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
+                                    <i class="fas fa-gem w-8"></i>
+                                    <span>Purple Theme</span>
+                                </button>
+                            </div>
+                            
+                            <div class="theme-group">
+                                <div class="theme-group-title">Warm Colors</div>
+                                <button onclick="applyTheme('sunset')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
+                                    <i class="fas fa-sun w-8"></i>
+                                    <span>Sunset Theme</span>
+                                </button>
+                                <button onclick="applyTheme('rose')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
+                                    <i class="fas fa-fire w-8"></i>
+                                    <span>Rose Theme</span>
+                                </button>
+                                <button onclick="applyTheme('forest')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
+                                    <i class="fas fa-tree w-8"></i>
+                                    <span>Forest Theme</span>
+                                </button>
+                            </div>
+
+                            <!-- Special Colors section in theme dropdown -->
+                            <div class="theme-group">
+                                <div class="theme-group-title">Special Colors</div>
+                                <button onclick="applyTheme('midnight')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
+                                    <i class="fas fa-star w-8"></i>
+                                    <span>Midnight Theme</span>
+                                </button>
+                                <button onclick="applyTheme('coral')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
+                                    <i class="fas fa-fish w-8"></i>
+                                    <span>Coral Theme</span>
+                                </button>
+                                <button onclick="applyTheme('mint')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
+                                    <i class="fas fa-seedling w-8"></i>
+                                    <span>Mint Theme</span>
+                                </button>
+                                <button onclick="applyTheme('amber')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
+                                    <i class="fas fa-certificate w-8"></i>
+                                    <span>Amber Theme</span>
+                                </button>
+                            </div>
+
+                            <!-- Add this new group in the theme dropdown -->
+                            <div class="theme-group">
+                                <div class="theme-group-title">Effects</div>
+                                <button onclick="toggleRainEffect()" type="button" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
+                                    <i class="fas fa-cloud-rain w-8"></i>
+                                    <span>Rain Effect</span>
+                                    <i class="fas fa-check ml-auto rain-status hidden"></i>
+                                </button>
+                            </div>
+
+                            <!-- Add this new group in the theme dropdown -->
+                            <div class="theme-group">
+                                <div class="theme-group-title">Seasonal Themes</div>
+                                <button onclick="applyTheme('nordic')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
+                                    <i class="fas fa-snowflake w-8"></i>
+                                    <span>Nordic Theme</span>
+                                </button>
+                                <button onclick="applyTheme('sakura')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
+                                    <i class="fas fa-fan w-8"></i>
+                                    <span>Sakura Theme</span>
+                                </button>
+                                <button onclick="applyTheme('cyber')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
+                                    <i class="fas fa-microchip w-8"></i>
+                                    <span>Cyber Theme</span>
+                                </button>
+                                <button onclick="applyTheme('autumn')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
+                                    <i class="fas fa-leaf w-8"></i>
+                                    <span>Autumn Theme</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button onclick="toggleMenu()" class="mobile-menu-btn p-2 rounded-lg transition-all duration-300">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden bg-[var(--bg-color)]">
+            <!-- Theme toggles for mobile -->
+            <div class="flex flex-wrap justify-center gap-3 py-4 border-b border-[var(--border-color)]">
+                <!-- Auto Theme -->
+                <button onclick="applyTheme('auto')"
+                    class="theme-btn w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-color)] border-2 shadow-md"
+                    style="border-color: var(--text-color)">
+                    <i class="fas fa-sync-alt text-xl"></i>
+                </button>
+                
+                <!-- Dark Themes -->
+                <button onclick="applyTheme('dark')"
+                    class="theme-btn w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-color)] border-2 shadow-md"
+                    style="border-color: var(--text-color)">
+                    <i class="fas fa-moon text-xl"></i>
+                </button>
+                <button onclick="applyTheme('dark-2')"
+                    class="theme-btn w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-color)] border-2 shadow-md"
+                    style="border-color: var(--text-color)">
+                    <i class="fas fa-circle text-xl"></i>
+                </button>
+
+                <!-- Cool Colors -->
+                <button onclick="applyTheme('blue')"
+                    class="theme-btn w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-color)] border-2 shadow-md"
+                    style="border-color: var(--text-color)">
+                    <i class="fas fa-water text-xl"></i>
+                </button>
+                <button onclick="applyTheme('ocean')"
+                    class="theme-btn w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-color)] border-2 shadow-md"
+                    style="border-color: var(--text-color)">
+                    <i class="fas fa-wave-square text-xl"></i>
+                </button>
+                <button onclick="applyTheme('purple')"
+                    class="theme-btn w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-color)] border-2 shadow-md"
+                    style="border-color: var(--text-color)">
+                    <i class="fas fa-gem text-xl"></i>
+                </button>
+
+                <!-- Warm Colors -->
+                <button onclick="applyTheme('sunset')"
+                    class="theme-btn w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-color)] border-2 shadow-md"
+                    style="border-color: var(--text-color)">
+                    <i class="fas fa-sun text-xl"></i>
+                </button>
+                <button onclick="applyTheme('rose')"
+                    class="theme-btn w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-color)] border-2 shadow-md"
+                    style="border-color: var(--text-color)">
+                    <i class="fas fa-fire text-xl"></i>
+                </button>
+                <button onclick="applyTheme('forest')"
+                    class="theme-btn w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-color)] border-2 shadow-md"
+                    style="border-color: var (--text-color)">
+                    <i class="fas fa-tree text-xl"></i>
+                </button>
+
+                <!-- Special Colors -->
+                <button onclick="applyTheme('midnight')"
+                    class="theme-btn w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-color)] border-2 shadow-md"
+                    style="border-color: var(--text-color)">
+                    <i class="fas fa-star text-xl"></i>
+                </button>
+                <button onclick="applyTheme('coral')"
+                    class="theme-btn w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-color)] border-2 shadow-md"
+                    style="border-color: var(--text-color)">
+                    <i class="fas fa-fish text-xl"></i>
+                </button>
+                <button onclick="applyTheme('mint')"
+                    class="theme-btn w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-color)] border-2 shadow-md"
+                    style="border-color: var(--text-color)">
+                    <i class="fas fa-seedling text-xl"></i>
+                </button>
+                <button onclick="applyTheme('amber')"
+                    class="theme-btn w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-color)] border-2 shadow-md"
+                    style="border-color: var(--text-color)">
+                    <i class="fas fa-certificate text-xl"></i>
+                </button>
+
+                <!-- Seasonal Themes -->
+                <button onclick="applyTheme('nordic')"
+                    class="theme-btn w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-color)] border-2 shadow-md"
+                    style="border-color: var(--text-color)">
+                    <i class="fas fa-snowflake text-xl"></i>
+                </button>
+                <button onclick="applyTheme('sakura')"
+                    class="theme-btn w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-color)] border-2 shadow-md"
+                    style="border-color: var(--text-color)">
+                    <i class="fas fa-fan text-xl"></i>
+                </button>
+                <button onclick="applyTheme('cyber')"
+                    class="theme-btn w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-color)] border-2 shadow-md"
+                    style="border-color: var(--text-color)">
+                    <i class="fas fa-microchip text-xl"></i>
+                </button>
+                <button onclick="applyTheme('autumn')"
+                    class="theme-btn w-10 h-10 rounded-full flex items-center justify-center bg-[var(--bg-color)] border-2 shadow-md"
+                    style="border-color: var(--text-color)">
+                    <i class="fas fa-leaf text-xl"></i>
+                </button>
+            </div>
+             <!-- Mobile Search Input -->
+             <div class="px-4 py-4 border-b border-[var(--border-color)]">
+                 <div class="relative">
+                     <input 
+                         id="mobile-notify-search" 
+                         type="text" 
+                         placeholder="Notify me when..." 
+                         class="w-full px-4 py-3 text-base rounded-full border-2 border-[var(--border-color)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)] focus:border-[var(--accent-color)] bg-[var(--bg-color)] text-[var(--text-color)] transition-all duration-300" 
+                     />
+                     <button class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-[var(--accent-color)] text-[var(--bg-color)] p-2 rounded-full hover:bg-[var(--accent-dark)] transition-all duration-300">
+                         <i class="fas fa-search text-sm"></i>
+                     </button>
+                 </div>
+             </div>
+             
+             <!-- Mobile menu items -->
+             <div class="py-2">
+                 <a href="#notifications" class="block text-[var(--text-color)] hover:text-[var(--accent-color)] px-4 py-2">My Alerts</a>
+                 <a href="#use-cases" class="block text-[var(--text-color)] hover:text-[var(--accent-color)] px-4 py-2">Use Cases</a>
+                 <a href="#features" class="block text-[var(--text-color)] hover:text-[var(--accent-color)] px-4 py-2">Features</a>
+             </div>
+         </div>
+     </nav>
+
+     <!-- Alert Creation Modal -->
+     <div id="alert-creation-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center hidden z-[9999]">
+         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+             <!-- Modal Header -->
+             <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                 <div class="flex items-center justify-between">
+                     <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Create Alert</h3>
+                     <button onclick="closeAlertModal()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                         <i class="fas fa-times text-xl"></i>
+                     </button>
+                 </div>
+                 <!-- Editable Alert Description -->
+                 <div class="mt-4">
+                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                         <i class="fas fa-edit mr-2 text-[var(--accent-color)]"></i>
+                         Alert Description
+                     </label>
+                     <textarea 
+                         id="alert-description-input" 
+                         rows="3" 
+                         placeholder="Describe what you want to be notified about..."
+                         class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-[var(--accent-color)] focus:border-[var(--accent-color)] transition-all duration-300 resize-none"
+                     ></textarea>
+                 </div>
+             </div>
+             
+             <!-- Modal Content -->
+             <div class="p-6 space-y-6">
+                 <!-- Schedule Options -->
+                 <div>
+                     <label class="block text-sm font-bold text-gray-800 dark:text-gray-200 mb-3">
+                         <i class="fas fa-clock mr-2 text-[var(--accent-color)]"></i>
+                         How often should we check?
+                     </label>
+                     <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                         <button class="cron-option p-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-[var(--accent-color)] hover:bg-[var(--accent-color)]/10 transition-all duration-300 text-center" data-cron="*/10 * * * *">
+                             <i class="fas fa-bolt text-[var(--accent-color)] mb-1"></i>
+                             <p class="text-sm font-medium text-gray-800 dark:text-gray-200">10 minutes</p>
+                             <p class="text-xs text-gray-500 dark:text-gray-400">Real-time</p>
+                         </button>
+                         <button class="cron-option p-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-[var(--accent-color)] hover:bg-[var(--accent-color)]/10 transition-all duration-300 text-center" data-cron="0 * * * *">
+                             <i class="fas fa-clock text-[var(--accent-color)] mb-1"></i>
+                             <p class="text-sm font-medium text-gray-800 dark:text-gray-200">1 hour</p>
+                             <p class="text-xs text-gray-500 dark:text-gray-400">Recommended</p>
+                         </button>
+                         <button class="cron-option p-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-[var(--accent-color)] hover:bg-[var(--accent-color)]/10 transition-all duration-300 text-center" data-cron="0 */6 * * *">
+                             <i class="fas fa-calendar text-[var(--accent-color)] mb-1"></i>
+                             <p class="text-sm font-medium text-gray-800 dark:text-gray-200">6 hours</p>
+                             <p class="text-xs text-gray-500 dark:text-gray-400">Balanced</p>
+                         </button>
+                         <button class="cron-option p-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-[var(--accent-color)] hover:bg-[var(--accent-color)]/10 transition-all duration-300 text-center" data-cron="0 9 * * *">
+                             <i class="fas fa-calendar-day text-[var(--accent-color)] mb-1"></i>
+                             <p class="text-sm font-medium text-gray-800 dark:text-gray-200">Daily</p>
+                             <p class="text-xs text-gray-500 dark:text-gray-400">9:00 AM</p>
+                         </button>
+                     </div>
+                 </div>
+                 
+                 <!-- Notification Methods -->
+                 <div>
+                     <label class="block text-sm font-bold text-gray-800 dark:text-gray-200 mb-3">
+                         <i class="fas fa-bell mr-2 text-[var(--accent-color)]"></i>
+                         How should we notify you? (Select multiple)
+                     </label>
+                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                         <button class="notification-method p-4 border-2 border-[var(--accent-color)] bg-[var(--accent-color)]/10 rounded-xl transition-all duration-300 text-center selected" data-method="whatsapp">
+                             <div class="relative">
+                                 <i class="fab fa-whatsapp text-2xl text-green-500 mb-2"></i>
+                                 <i class="fas fa-check absolute -top-1 -right-1 w-5 h-5 bg-[var(--accent-color)] text-white rounded-full text-xs flex items-center justify-center"></i>
+                             </div>
+                             <p class="text-sm font-medium text-gray-800 dark:text-gray-200">WhatsApp</p>
+                             <p class="text-xs text-gray-500 dark:text-gray-400">Default</p>
+                         </button>
+                         <button class="notification-method p-4 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-[var(--accent-color)] hover:bg-[var(--accent-color)]/10 transition-all duration-300 text-center" data-method="email">
+                             <div class="relative">
+                                 <i class="fas fa-envelope text-2xl text-blue-500 mb-2"></i>
+                                 <i class="fas fa-check absolute -top-1 -right-1 w-5 h-5 bg-[var(--accent-color)] text-white rounded-full text-xs items-center justify-center hidden"></i>
+                             </div>
+                             <p class="text-sm font-medium text-gray-800 dark:text-gray-200">Email</p>
+                             <p class="text-xs text-gray-500 dark:text-gray-400">Reliable</p>
+                         </button>
+                         <button class="notification-method p-4 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-[var(--accent-color)] hover:bg-[var(--accent-color)]/10 transition-all duration-300 text-center" data-method="sms">
+                             <div class="relative">
+                                 <i class="fas fa-sms text-2xl text-purple-500 mb-2"></i>
+                                 <i class="fas fa-check absolute -top-1 -right-1 w-5 h-5 bg-[var(--accent-color)] text-white rounded-full text-xs items-center justify-center hidden"></i>
+                             </div>
+                             <p class="text-sm font-medium text-gray-800 dark:text-gray-200">SMS</p>
+                             <p class="text-xs text-gray-500 dark:text-gray-400">Instant</p>
+                         </button>
+                         <button class="notification-method p-4 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-[var(--accent-color)] hover:bg-[var(--accent-color)]/10 transition-all duration-300 text-center" data-method="discord">
+                             <div class="relative">
+                                 <i class="fab fa-discord text-2xl text-indigo-500 mb-2"></i>
+                                 <i class="fas fa-check absolute -top-1 -right-1 w-5 h-5 bg-[var(--accent-color)] text-white rounded-full text-xs items-center justify-center hidden"></i>
+                             </div>
+                             <p class="text-sm font-medium text-gray-800 dark:text-gray-200">Discord</p>
+                             <p class="text-xs text-gray-500 dark:text-gray-400">Community</p>
+                         </button>
+                     </div>
+                     
+                     <!-- Selected Methods Display -->
+                     <div class="mt-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-xl">
+                         <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Selected channels:</p>
+                         <div id="selected-methods" class="flex flex-wrap gap-2">
+                             <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium flex items-center">
+                                 <i class="fab fa-whatsapp mr-1"></i>WhatsApp
+                                 <button onclick="removeMethod('whatsapp')" class="ml-2 hover:text-green-600">×</button>
+                             </span>
+                         </div>
+                     </div>
+                 </div>
+                 
+                 <!-- Action Buttons -->
+                 <div class="flex flex-col sm:flex-row gap-3 pt-4">
+                     <button onclick="testAlert()" class="flex-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 px-6 py-3 rounded-xl font-medium transition-all duration-300 flex items-center justify-center">
+                         <i class="fas fa-play mr-2"></i>
+                         Test Alert Now
+                     </button>
+                     <button onclick="createAlert()" class="flex-1 bg-gradient-to-r from-[var(--accent-color)] to-[var(--accent-dark)] text-white px-6 py-3 rounded-xl font-medium hover:shadow-lg transition-all duration-300 flex items-center justify-center">
+                         <i class="fas fa-plus mr-2"></i>
+                         Create Alert
+                     </button>
+                 </div>
+             </div>
+         </div>
+     </div>
+
+     <!-- Hero Section -->
+    <section class="pt-32 pb-24 hero-gradient hero-section relative overflow-hidden">
+        <canvas id="notification-canvas" class="absolute inset-0 z-0 w-full h-full"></canvas>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+             <div class="text-center space-y-8">
+                 <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-[var(--text-color)] mb-6 animate-slide-up">
+                     Welcome to <span class="text-[var(--accent-color)] font-extrabold">NotifyMe</span>
+                 </h1>
+                 <p class="text-xl md:text-2xl text-[var(--text-color)] max-w-3xl mx-auto mb-8 animate-slide-up opacity-80 leading-relaxed">
+                     Your eyes on the web. Don't search, get alerted. The web changes. You know first.
+                 </p>
+                 <div class="animate-slide-up">
+                     <button onclick="openAlertModal('Enter your alert description here...')" 
+                     class="btn-primary px-8 py-4 rounded-xl inline-flex items-center text-lg font-semibold bg-[var(--accent-color)] text-[var(--bg-color)] shadow-lg hover:bg-[var(--accent-dark)] hover:scale-105 transition-all duration-300 animate-pulse-slow">
+                         Create Your First Alert
+                         <i class="fas fa-bell ml-3"></i>
+                     </button>
+                 </div>
+             </div>
+        </div>
+    </section>
+
+
+     <!-- Use Cases Section -->
+     <section id="use-cases" class="py-20 bg-[var(--bg-color)]">
+         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+             <div class="text-center mb-16">
+                 <h2 class="text-4xl md:text-5xl font-bold text-[var(--text-color)] mb-4">Use Cases & Examples</h2>
+                 <div class="w-32 h-1 bg-[var(--accent-color)] mx-auto rounded-full"></div>
+                 <p class="text-xl md:text-2xl text-[var(--text-color)] mt-4 opacity-80 max-w-3xl mx-auto">
+                     Discover powerful ways to stay informed about what matters most to you.
+                 </p>
+             </div>
+             <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                 <!-- Stock Alerts -->
+                 <div class="bg-[var(--bg-color)] p-6 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border border-[var(--border-color)]">
+                     <div class="flex flex-col items-center text-center space-y-4">
+                         <div class="w-14 h-14 bg-[var(--accent-color)]/10 rounded-full flex items-center justify-center">
+                             <i class="fas fa-chart-line text-[var(--accent-color)] text-2xl"></i>
+                         </div>
+                         <h3 class="text-xl md:text-2xl font-bold text-[var(--text-color)]">📈 Stock Alerts</h3>
+                         <p class="text-[var(--text-color)] opacity-80 leading-relaxed">
+                             Get notified when Tesla stock crosses $10K or when there's a big drop in Google stock.
+                         </p>
+                         <div class="text-sm text-[var(--text-color)]/60">
+                             <p>• Tesla stock price alerts</p>
+                             <p>• Market volatility notifications</p>
+                         </div>
+                     </div>
+                 </div>
+
+                 <!-- News & Updates -->
+                 <div class="bg-[var(--bg-color)] p-6 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border border-[var(--border-color)]">
+                     <div class="flex flex-col items-center text-center space-y-4">
+                         <div class="w-14 h-14 bg-[var(--accent-color)]/10 rounded-full flex items-center justify-center">
+                             <i class="fas fa-newspaper text-[var(--accent-color)] text-2xl"></i>
+                         </div>
+                         <h3 class="text-xl md:text-2xl font-bold text-[var(--text-color)]">📰 News Updates</h3>
+                         <p class="text-[var(--text-color)] opacity-80 leading-relaxed">
+                             Stay updated when OpenAI uploads new videos or breaking tech news happens.
+                         </p>
+                         <div class="text-sm text-[var(--text-color)]/60">
+                             <p>• OpenAI video notifications</p>
+                             <p>• Breaking tech news alerts</p>
+                         </div>
+                     </div>
+                 </div>
+
+                 <!-- Legal & Policy -->
+                 <div class="bg-[var(--bg-color)] p-6 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border border-[var(--border-color)]">
+                     <div class="flex flex-col items-center text-center space-y-4">
+                         <div class="w-14 h-14 bg-[var(--accent-color)]/10 rounded-full flex items-center justify-center">
+                             <i class="fas fa-gavel text-[var(--accent-color)] text-2xl"></i>
+                         </div>
+                         <h3 class="text-xl md:text-2xl font-bold text-[var(--text-color)]">📜 Legal Updates</h3>
+                         <p class="text-[var(--text-color)] opacity-80 leading-relaxed">
+                             Get alerted about new tax policies or laws that affect your business.
+                         </p>
+                         <div class="text-sm text-[var(--text-color)]/60">
+                             <p>• Tax policy changes</p>
+                             <p>• Business law updates</p>
+                         </div>
+                     </div>
+                 </div>
+
+                 <!-- Weather & Environment -->
+                 <div class="bg-[var(--bg-color)] p-6 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border border-[var(--border-color)]">
+                     <div class="flex flex-col items-center text-center space-y-4">
+                         <div class="w-14 h-14 bg-[var(--accent-color)]/10 rounded-full flex items-center justify-center">
+                             <i class="fas fa-cloud-rain text-[var(--accent-color)] text-2xl"></i>
+                         </div>
+                         <h3 class="text-xl md:text-2xl font-bold text-[var(--text-color)]">🌦️ Weather Alerts</h3>
+                         <p class="text-[var(--text-color)] opacity-80 leading-relaxed">
+                             Be notified about rain between 10-12 PM on weekdays or severe weather conditions.
+                         </p>
+                         <div class="text-sm text-[var(--text-color)]/60">
+                             <p>• Scheduled weather alerts</p>
+                             <p>• Severe weather warnings</p>
+                         </div>
+                     </div>
+                 </div>
+
+                 <!-- Shopping & Deals -->
+                 <div class="bg-[var(--bg-color)] p-6 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border border-[var(--border-color)]">
+                     <div class="flex flex-col items-center text-center space-y-4">
+                         <div class="w-14 h-14 bg-[var(--accent-color)]/10 rounded-full flex items-center justify-center">
+                             <i class="fas fa-shopping-cart text-[var(--accent-color)] text-2xl"></i>
+                         </div>
+                         <h3 class="text-xl md:text-2xl font-bold text-[var(--text-color)]">🛒 Shopping Alerts</h3>
+                         <p class="text-[var(--text-color)] opacity-80 leading-relaxed">
+                             Get notified when PS5 price drops on Flipkart or when products are back in stock.
+                         </p>
+                         <div class="text-sm text-[var(--text-color)]/60">
+                             <p>• Price drop notifications</p>
+                             <p>• Stock availability alerts</p>
+                         </div>
+                     </div>
+                 </div>
+
+                 <!-- Sports & Events -->
+                 <div class="bg-[var(--bg-color)] p-6 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border border-[var(--border-color)]">
+                     <div class="flex flex-col items-center text-center space-y-4">
+                         <div class="w-14 h-14 bg-[var(--accent-color)]/10 rounded-full flex items-center justify-center">
+                             <i class="fas fa-baseball-ball text-[var(--accent-color)] text-2xl"></i>
+                         </div>
+                         <h3 class="text-xl md:text-2xl font-bold text-[var(--text-color)]">🏏 Sports Updates</h3>
+                         <p class="text-[var(--text-color)] opacity-80 leading-relaxed">
+                             Be alerted when 5 wickets fall in a match or when India wins the toss.
+                         </p>
+                         <div class="text-sm text-[var(--text-color)]/60">
+                             <p>• Cricket match updates</p>
+                             <p>• Toss results</p>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+        </div>
+    </section>
+
+     <!-- Features Section -->
+     <section id="features" class="py-20 bg-[var(--bg-color)]">
+         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+             <div class="text-center mb-16">
+                 <h2 class="text-4xl md:text-5xl font-bold text-[var(--text-color)] mb-4">Agent Capabilities</h2>
+                 <div class="w-32 h-1 bg-[var(--accent-color)] mx-auto rounded-full"></div>
+                 <p class="text-xl md:text-2xl text-[var(--text-color)] mt-4 opacity-80 max-w-3xl mx-auto">
+                     Powerful features that make NotifyMe your intelligent web monitoring assistant.
+                 </p>
+             </div>
+             <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                 <!-- Actions -->
+                 <div class="bg-gradient-to-br from-blue-900/20 to-blue-800/20 p-8 rounded-2xl border border-blue-600/30">
+                     <h3 class="text-2xl font-bold text-[var(--text-color)] mb-6 text-center">⚡ Actions</h3>
+                     <div class="grid grid-cols-2 gap-4">
+                         <div class="bg-[var(--bg-color)]/50 rounded-lg p-4 text-center border border-[var(--border-color)]">
+                             <i class="fas fa-search text-blue-400 text-2xl mb-2"></i>
+                             <p class="text-[var(--text-color)] text-sm font-medium">Web Search</p>
+                         </div>
+                         <div class="bg-[var(--bg-color)]/50 rounded-lg p-4 text-center border border-[var(--border-color)]">
+                             <i class="fas fa-envelope text-blue-400 text-2xl mb-2"></i>
+                             <p class="text-[var(--text-color)] text-sm font-medium">Send Mail</p>
+                         </div>
+                         <div class="bg-[var(--bg-color)]/50 rounded-lg p-4 text-center border border-[var(--border-color)]">
+                             <i class="fab fa-whatsapp text-blue-400 text-2xl mb-2"></i>
+                             <p class="text-[var(--text-color)] text-sm font-medium">WhatsApp</p>
+                         </div>
+                         <div class="bg-[var(--bg-color)]/50 rounded-lg p-4 text-center border border-[var(--border-color)]">
+                             <i class="fas fa-phone text-blue-400 text-2xl mb-2"></i>
+                             <p class="text-[var(--text-color)] text-sm font-medium">Call Message</p>
+                         </div>
+                         <div class="bg-[var(--bg-color)]/50 rounded-lg p-4 text-center border border-[var(--border-color)]">
+                             <i class="fas fa-sms text-blue-400 text-2xl mb-2"></i>
+                             <p class="text-[var(--text-color)] text-sm font-medium">Mobile SMS</p>
+                         </div>
+                         <div class="bg-[var(--bg-color)]/50 rounded-lg p-4 text-center border border-[var(--border-color)]">
+                             <i class="fab fa-discord text-blue-400 text-2xl mb-2"></i>
+                             <p class="text-[var(--text-color)] text-sm font-medium">Discord</p>
+                         </div>
+                     </div>
+                 </div>
+
+                 <!-- Capabilities -->
+                 <div class="bg-gradient-to-br from-purple-900/20 to-purple-800/20 p-8 rounded-2xl border border-purple-600/30">
+                     <h3 class="text-2xl font-bold text-[var(--text-color)] mb-6 text-center">🛠️ Capabilities</h3>
+                     <ul class="text-[var(--text-color)] space-y-4">
+                         <li class="flex items-center">
+                             <i class="fas fa-bolt text-purple-400 mr-3"></i>
+                             If event occurs → run email action
+                         </li>
+                         <li class="flex items-center">
+                             <i class="fas fa-clock text-purple-400 mr-3"></i>
+                             Run every hour
+                         </li>
+                         <li class="flex items-center">
+                             <i class="fas fa-calendar-alt text-purple-400 mr-3"></i>
+                             Schedule at fixed times
+                         </li>
+                         <li class="flex items-center">
+                             <i class="fas fa-eye text-purple-400 mr-3"></i>
+                             Continuous web monitoring
+                         </li>
+                         <li class="flex items-center">
+                             <i class="fas fa-brain text-purple-400 mr-3"></i>
+                             AI-powered event detection
+                         </li>
+                         <li class="flex items-center">
+                             <i class="fas fa-shield-alt text-purple-400 mr-3"></i>
+                             Smart duplicate prevention
+                         </li>
+                     </ul>
+                 </div>
+             </div>
+        </div>
+    </section>
+    
+     <!-- Active Notifications -->
+     <section id="notifications" class="py-20 bg-[var(--bg-color)]">
+         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+             <!-- Section Header -->
+             <div class="text-center mb-16">
+                 <h2 class="text-4xl font-bold text-[var(--text-color)] mb-4 animate-fade-in">Your Active Notifications</h2>
+                 <div class="w-32 h-1.5 bg-[var(--accent-color)] mx-auto rounded-full"></div>
+                 <p class="text-[var(--text-color)] mt-6 text-lg max-w-2xl mx-auto">Manage and monitor your intelligent alerts</p>
+             </div>
+
+             <!-- Sample Active Notifications -->
+             <div class="grid md:grid-cols-3 gap-8 mb-12">
+                 <!-- Sample Notification 1 -->
+                 <div class="bg-[var(--bg-color)] p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border border-green-500/30 border-l-4 border-l-green-500">
+                     <div class="space-y-4">
+                         <div class="flex items-start justify-between">
+                             <div class="flex items-center">
+                                 <i class="fas fa-chart-line text-green-500 text-xl mr-3"></i>
+                                 <h4 class="font-semibold text-[var(--text-color)]">Stock Alert</h4>
+                             </div>
+                             <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">Active</span>
+                         </div>
+                         <p class="text-[var(--text-color)]/80">Notify when AAPL stock price changes by 5%</p>
+                         <div class="flex justify-between items-center text-sm text-[var(--text-color)]/60">
+                             <span>Last checked: 2 mins ago</span>
+                             <button class="text-red-500 hover:text-red-700">
+                                 <i class="fas fa-trash"></i>
+                             </button>
+                         </div>
+                     </div>
+                 </div>
+
+                 <!-- Sample Notification 2 -->
+                 <div class="bg-[var(--bg-color)] p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border border-blue-500/30 border-l-4 border-l-blue-500">
+                     <div class="space-y-4">
+                         <div class="flex items-start justify-between">
+                             <div class="flex items-center">
+                                 <i class="fas fa-newspaper text-blue-500 text-xl mr-3"></i>
+                                 <h4 class="font-semibold text-[var(--text-color)]">News Alert</h4>
+                             </div>
+                             <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">Active</span>
+                         </div>
+                         <p class="text-[var(--text-color)]/80">New tax policy updates</p>
+                         <div class="flex justify-between items-center text-sm text-[var(--text-color)]/60">
+                             <span>Last checked: 1 hour ago</span>
+                             <button class="text-red-500 hover:text-red-700">
+                                 <i class="fas fa-trash"></i>
+                             </button>
+                         </div>
+                     </div>
+                 </div>
+
+                 <!-- Sample Notification 3 -->
+                 <div class="bg-[var(--bg-color)] p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border border-yellow-500/30 border-l-4 border-l-yellow-500">
+                     <div class="space-y-4">
+                         <div class="flex items-start justify-between">
+                             <div class="flex items-center">
+                                 <i class="fas fa-bitcoin-sign text-yellow-500 text-xl mr-3"></i>
+                                 <h4 class="font-semibold text-[var(--text-color)]">Crypto Alert</h4>
+                             </div>
+                             <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs">Paused</span>
+                         </div>
+                         <p class="text-[var(--text-color)]/80">Bitcoin price drops below $40,000</p>
+                         <div class="flex justify-between items-center text-sm text-[var(--text-color)]/60">
+                             <span>Last checked: 3 hours ago</span>
+                             <button class="text-red-500 hover:text-red-700">
+                                 <i class="fas fa-trash"></i>
+                             </button>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+
+             <!-- Action Buttons -->
+             <div class="text-center">
+                 <button onclick="openAlertModal('Enter your alert description here...')" 
+                    class="inline-flex items-center px-8 py-4 bg-[var(--accent-color)] hover:bg-[var(--accent-dark)] text-[var(--bg-color)] font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                     <i class="fas fa-plus mr-2"></i>
+                     Create New Alert
+                 </button>
+             </div>
+        </div>
+    </section>
+
+     <!-- Footer -->
+     <footer class="bg-gray-900 text-white py-12">
+         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+             <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
+                 <!-- Branding Section -->
+                 <div class="space-y-6">
+                     <div class="flex items-center space-x-3">
+                         <i class="fas fa-bell text-[var(--accent-light)] text-3xl"></i>
+                         <span class="font-bold text-xl md:text-2xl text-white">NotifyMe</span>
+                     </div>
+                     <p class="text-gray-300 opacity-80 leading-relaxed">
+                         Your intelligent web monitoring assistant. Stay informed without the constant searching.
+                     </p>
+                     <!-- Newsletter Subscription -->
+                     <div class="mt-6">
+                         <h4 class="text-lg font-semibold mb-3">Get Notified</h4>
+                         <form id="newsletter-form" class="flex flex-col sm:flex-row gap-2 items-stretch">
+                             <input
+                                 type="email"
+                                 placeholder="Enter your email for updates"
+                                 class="flex-1 min-h-[48px] px-4 rounded-lg bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)] focus:border-transparent transition-all duration-300"
+                             />
+                             <button
+                                 type="submit"
+                                 class="min-h-[48px] min-w-[120px] flex-shrink-0 px-4 bg-[var(--accent-color)] text-white rounded-lg hover:bg-[var(--accent-dark)] transition-all duration-300"
+                             >
+                                 Subscribe
+                             </button>
+                         </form>
+                     </div>
+                 </div>
+
+                 <!-- Quick Links -->
+                 <div>
+                     <h3 class="font-semibold text-lg md:text-xl text-white mb-5">Quick Links</h3>
+                     <ul class="space-y-3">
+                         <li>
+                             <a href="#notifications" 
+                             class="text-gray-400 hover:text-[var(--accent-light)] hover:underline transition-all duration-300">
+                                 My Alerts
+                             </a>
+                         </li>
+                         <li>
+                             <a href="#use-cases" 
+                             class="text-gray-400 hover:text-[var(--accent-light)] hover:underline transition-all duration-300">
+                                 Use Cases
+                             </a>
+                         </li>
+                         <li>
+                             <a href="#features" 
+                             class="text-gray-400 hover:text-[var(--accent-light)] hover:underline transition-all duration-300">
+                                 Features
+                             </a>
+                         </li>
+                     </ul>
+                 </div>
+
+                 <!-- Alert Types -->
+                 <div>
+                     <h3 class="font-semibold text-lg md:text-xl text-white mb-5">Alert Types</h3>
+                     <ul class="space-y-3">
+                         <li>
+                             <span class="text-gray-400">
+                                 📈 Stock & Finance
+                             </span>
+                         </li>
+                         <li>
+                             <span class="text-gray-400">
+                                 📰 News & Updates
+                             </span>
+                         </li>
+                         <li>
+                             <span class="text-gray-400">
+                                 🌦️ Weather Alerts
+                             </span>
+                         </li>
+                         <li>
+                             <span class="text-gray-400">
+                                 🛒 Shopping Deals
+                             </span>
+                         </li>
+                     </ul>
+                 </div>
+
+                 <!-- Connect With Us -->
+                 <div>
+                     <h3 class="font-semibold text-lg md:text-xl text-white mb-5">Support</h3>
+                     <div class="space-y-3">
+                         <p class="text-gray-400">
+                             <i class="fas fa-envelope mr-2"></i>
+                             support@notifyme.com
+                         </p>
+                         <p class="text-gray-400">
+                             <i class="fas fa-question-circle mr-2"></i>
+                             Help Center
+                         </p>
+                         <div class="flex space-x-4 mt-4">
+                             <a href="#" 
+                             class="text-gray-400 hover:text-[var(--accent-light)] hover:scale-110 transition-all duration-300">
+                                 <i class="fab fa-twitter text-2xl"></i>
+                             </a>
+                             <a href="#" 
+                             class="text-gray-400 hover:text-[var(--accent-light)] hover:scale-110 transition-all duration-300">
+                                 <i class="fab fa-github text-2xl"></i>
+                             </a>
+                             <a href="#" 
+                             class="text-gray-400 hover:text-[var(--accent-light)] hover:scale-110 transition-all duration-300">
+                                 <i class="fab fa-discord text-2xl"></i>
+                             </a>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+
+             <!-- Copyright -->
+             <div class="border-t border-gray-800 mt-10 py-6 text-center">
+                 <p class="text-gray-400 text-sm md:text-base opacity-80">
+                     © 2025 NotifyMe. All rights reserved. • Your intelligent notification assistant.
+                 </p>
+             </div>
+         </div>
+     </footer>
+
+    <!-- Back to Top Button -->
+    <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
+            class="fixed bottom-8 right-8 p-4 bg-[var(--accent-color)] text-[var(--bg-color)] rounded-full shadow-lg hover:bg-[var(--accent-dark)] transition duration-300 hidden md:block">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Add GSAP CDN before your closing body tag -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/gsap.min.js"></script>
+    <!-- Add Three.js library before closing body tag -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+     <!-- Site specific JS -->
+     <script>
+         // Notification-themed animation for hero section
+         const canvas = document.getElementById('notification-canvas');
+         if (canvas) {
+             const ctx = canvas.getContext('2d');
+             
+             function resizeCanvas() {
+                 canvas.width = canvas.offsetWidth;
+                 canvas.height = canvas.offsetHeight;
+             }
+             
+             resizeCanvas();
+             window.addEventListener('resize', resizeCanvas);
+             
+             // Notification particles
+             const particles = [];
+             const notificationIcons = ['🔔', '📧', '📱', '💬', '🚨', '⚡', '📊', '🌐'];
+             
+             class NotificationParticle {
+                 constructor() {
+                     this.x = Math.random() * canvas.width;
+                     this.y = Math.random() * canvas.height;
+                     this.vx = (Math.random() - 0.5) * 0.5;
+                     this.vy = (Math.random() - 0.5) * 0.5;
+                     this.icon = notificationIcons[Math.floor(Math.random() * notificationIcons.length)];
+                     this.size = Math.random() * 20 + 15;
+                     this.opacity = Math.random() * 0.7 + 0.3;
+                     this.pulse = Math.random() * Math.PI * 2;
+                 }
+                 
+                 update() {
+                     this.x += this.vx;
+                     this.y += this.vy;
+                     this.pulse += 0.02;
+                     
+                     if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                     if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+                 }
+                 
+                 draw() {
+                     ctx.save();
+                     ctx.globalAlpha = this.opacity + Math.sin(this.pulse) * 0.2;
+                     ctx.font = `${this.size}px Arial`;
+                     ctx.textAlign = 'center';
+                     ctx.fillText(this.icon, this.x, this.y);
+                     ctx.restore();
+                 }
+             }
+             
+             // Create particles
+             for (let i = 0; i < 25; i++) {
+                 particles.push(new NotificationParticle());
+             }
+             
+             function animate() {
+                 ctx.clearRect(0, 0, canvas.width, canvas.height);
+                 
+                 particles.forEach(particle => {
+                     particle.update();
+                     particle.draw();
+                 });
+                 
+                 requestAnimationFrame(animate);
+             }
+             
+             animate();
+         }
+     </script>
+
+     <!-- Add this script before closing body tag -->
+     <script>
+         window.addEventListener('scroll', function() {
+             const nav = document.getElementById('main-nav');
+             if (window.scrollY > 50) {
+                 nav.classList.add('bg-opacity-90', 'backdrop-blur-sm');
+             } else {
+                 nav.classList.remove('bg-opacity-90', 'backdrop-blur-sm');
+             }
+         });
+
+         // Header suggestions functionality
+         function showHeaderSuggestions() {
+             const suggestions = document.getElementById('header-suggestions');
+             if (suggestions) {
+                 suggestions.classList.remove('hidden');
+             }
+         }
+
+         function hideHeaderSuggestions() {
+             setTimeout(() => {
+                 const suggestions = document.getElementById('header-suggestions');
+                 if (suggestions) {
+                     suggestions.classList.add('hidden');
+                 }
+             }, 150);
+         }
+
+         // Handle suggestion button clicks
+         document.addEventListener('DOMContentLoaded', function() {
+             const suggestionButtons = document.querySelectorAll('.suggestion-btn');
+             const searchInput = document.getElementById('header-notify-search');
+             
+             suggestionButtons.forEach(button => {
+                 button.addEventListener('mousedown', function(e) {
+                     e.preventDefault(); // Prevent input blur
+                     const text = this.textContent.trim();
+                     if (searchInput) {
+                         searchInput.value = `Notify me about ${text.toLowerCase()}`;
+                         searchInput.focus();
+                     }
+                 });
+             });
+         });
+
+         // Typing suggestions with real-time filtering
+         const allSuggestions = [
+             "Notify me when India has 5 wickets",
+             "Notify me when Tesla stock crosses $1000",
+             "Notify me when Bitcoin price drops below $40000",
+             "Notify me when OpenAI releases a new model",
+             "Notify me when there's rain in Mumbai",
+             "Notify me when PS5 is back in stock on Flipkart",
+             "Notify me when new tax policy is announced",
+             "Notify me when Google stock drops by 10%",
+             "Notify me when India wins the cricket toss",
+             "Notify me when there's a new hackathon on Devpost"
+         ];
+
+         function handleTypingSuggestions(value) {
+             const suggestionsContainer = document.getElementById('dynamic-suggestions');
+             
+             if (value.length > 2) {
+                 const filtered = allSuggestions.filter(suggestion => 
+                     suggestion.toLowerCase().includes(value.toLowerCase())
+                 );
+                 
+                 suggestionsContainer.innerHTML = '';
+                 filtered.slice(0, 5).forEach(suggestion => {
+                     const suggestionDiv = document.createElement('div');
+                     suggestionDiv.className = 'suggestion-item p-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer rounded-xl transition-all duration-200 flex items-center';
+                     suggestionDiv.innerHTML = `
+                         <i class="fas fa-lightbulb mr-3 text-[var(--accent-color)]"></i>
+                         <span class="text-gray-800 dark:text-gray-200">${suggestion}</span>
+                     `;
+                     suggestionDiv.onclick = () => selectSuggestion(suggestion);
+                     suggestionsContainer.appendChild(suggestionDiv);
+                 });
+                 
+                 showHeaderSuggestions();
+             } else {
+                 suggestionsContainer.innerHTML = '';
+             }
+         }
+
+         function selectSuggestion(suggestion) {
+             document.getElementById('header-notify-search').value = suggestion;
+             hideHeaderSuggestions();
+             openAlertModal(suggestion);
+         }
+
+         function handleEnterKey(event) {
+             if (event.key === 'Enter') {
+                 const value = event.target.value;
+                 if (value.trim()) {
+                     hideHeaderSuggestions();
+                     openAlertModal(value);
+                 }
+             }
+         }
+
+         function createAlertFromSearch() {
+             const searchInput = document.getElementById('header-notify-search');
+             const value = searchInput.value.trim();
+             
+             if (value) {
+                 hideHeaderSuggestions();
+                 openAlertModal(value);
+             } else {
+                 // Show a hint if input is empty
+                 searchInput.focus();
+                 searchInput.placeholder = "Type your alert here...";
+                 setTimeout(() => {
+                     searchInput.placeholder = "Notify me when...";
+                 }, 2000);
+             }
+         }
+
+         // Alert creation modal functions
+         function openAlertModal(alertText) {
+             const modal = document.getElementById('alert-creation-modal');
+             const descriptionInput = document.getElementById('alert-description-input');
+             descriptionInput.value = alertText;
+             modal.classList.remove('hidden');
+             
+             // Focus the textarea so user can immediately edit
+             setTimeout(() => {
+                 descriptionInput.focus();
+                 descriptionInput.setSelectionRange(descriptionInput.value.length, descriptionInput.value.length);
+             }, 100);
+         }
+
+         function closeAlertModal() {
+             const modal = document.getElementById('alert-creation-modal');
+             modal.classList.add('hidden');
+         }
+
+         // Global variable to track selected methods
+         let selectedMethods = ['whatsapp']; // WhatsApp selected by default
+
+         // Cron option selection and multiple notification methods
+         document.addEventListener('DOMContentLoaded', function() {
+             const cronOptions = document.querySelectorAll('.cron-option');
+             const notificationMethods = document.querySelectorAll('.notification-method');
+             
+             // Cron option selection (single selection)
+             cronOptions.forEach(option => {
+                 option.addEventListener('click', function() {
+                     cronOptions.forEach(o => o.classList.remove('border-[var(--accent-color)]', 'bg-[var(--accent-color)]/10'));
+                     this.classList.add('border-[var(--accent-color)]', 'bg-[var(--accent-color)]/10');
+                 });
+             });
+             
+             // Notification methods (multiple selection)
+             notificationMethods.forEach(method => {
+                 method.addEventListener('click', function() {
+                     const methodType = this.dataset.method;
+                     const checkIcon = this.querySelector('.fa-check');
+                     
+                     if (selectedMethods.includes(methodType)) {
+                         // Remove method
+                         selectedMethods = selectedMethods.filter(m => m !== methodType);
+                         this.classList.remove('border-[var(--accent-color)]', 'bg-[var(--accent-color)]/10', 'selected');
+                         checkIcon.classList.add('hidden');
+                         checkIcon.classList.remove('flex');
+                     } else {
+                         // Add method
+                         selectedMethods.push(methodType);
+                         this.classList.add('border-[var(--accent-color)]', 'bg-[var(--accent-color)]/10', 'selected');
+                         checkIcon.classList.remove('hidden');
+                         checkIcon.classList.add('flex');
+                     }
+                     
+                     updateSelectedMethodsDisplay();
+                 });
+             });
+         });
+
+         // Update selected methods display
+         function updateSelectedMethodsDisplay() {
+             const container = document.getElementById('selected-methods');
+             const methodNames = {
+                 whatsapp: { name: 'WhatsApp', icon: 'fab fa-whatsapp', color: 'green' },
+                 email: { name: 'Email', icon: 'fas fa-envelope', color: 'blue' },
+                 sms: { name: 'SMS', icon: 'fas fa-sms', color: 'purple' },
+                 discord: { name: 'Discord', icon: 'fab fa-discord', color: 'indigo' }
+             };
+             
+             container.innerHTML = '';
+             
+             if (selectedMethods.length === 0) {
+                 container.innerHTML = '<span class="text-gray-500 dark:text-gray-400 text-sm">No channels selected</span>';
+                 return;
+             }
+             
+             selectedMethods.forEach(method => {
+                 const methodInfo = methodNames[method];
+                 const span = document.createElement('span');
+                 span.className = `px-3 py-1 bg-${methodInfo.color}-100 text-${methodInfo.color}-800 rounded-full text-xs font-medium flex items-center`;
+                 span.innerHTML = `
+                     <i class="${methodInfo.icon} mr-1"></i>${methodInfo.name}
+                     <button onclick="removeMethod('${method}')" class="ml-2 hover:text-${methodInfo.color}-600">×</button>
+                 `;
+                 container.appendChild(span);
+             });
+         }
+
+         // Remove method function
+         function removeMethod(methodType) {
+             selectedMethods = selectedMethods.filter(m => m !== methodType);
+             
+             // Update UI
+             const methodButton = document.querySelector(`[data-method="${methodType}"]`);
+             const checkIcon = methodButton.querySelector('.fa-check');
+             
+             methodButton.classList.remove('border-[var(--accent-color)]', 'bg-[var(--accent-color)]/10', 'selected');
+             checkIcon.classList.add('hidden');
+             checkIcon.classList.remove('flex');
+             
+             updateSelectedMethodsDisplay();
+         }
+
+         // Test alert function
+         function testAlert() {
+             const alertText = document.getElementById('alert-description-input').value;
+             const selectedCron = document.querySelector('.cron-option.border-\\[var\\(--accent-color\\)\\]');
+             
+             if (selectedMethods.length === 0) {
+                 showNotification('Please select at least one notification method.', 'warning');
+                 return;
+             }
+             
+             // Show loading state
+             const testBtn = event.target;
+             const originalText = testBtn.innerHTML;
+             testBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Testing...';
+             testBtn.disabled = true;
+             
+             // Simulate API call to test the alert
+             setTimeout(() => {
+                 testBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Test Successful!';
+                 testBtn.className = testBtn.className.replace('bg-gray-100', 'bg-green-500').replace('text-gray-800', 'text-white');
+                 
+                 // Show success message with all selected methods
+                 const methodsText = selectedMethods.join(', ');
+                 showNotification(`Test alert sent via ${methodsText}! We found relevant content on the web.`, 'success');
+                 
+                 setTimeout(() => {
+                     testBtn.innerHTML = originalText;
+                     testBtn.disabled = false;
+                     testBtn.className = testBtn.className.replace('bg-green-500', 'bg-gray-100').replace('text-white', 'text-gray-800');
+                 }, 3000);
+             }, 2000);
+         }
+
+         // Create alert function
+         function createAlert() {
+             const alertText = document.getElementById('alert-description-input').value;
+             const selectedCron = document.querySelector('.cron-option.border-\\[var\\(--accent-color\\)\\]');
+             
+             if (!alertText.trim()) {
+                 showNotification('Please enter an alert description.', 'warning');
+                 return;
+             }
+             
+             if (selectedMethods.length === 0) {
+                 showNotification('Please select at least one notification method.', 'warning');
+                 return;
+             }
+             
+             const alertData = {
+                 description: alertText,
+                 schedule: selectedCron?.dataset.cron || '0 * * * *',
+                 methods: selectedMethods, // Now supports multiple methods
+                 active: true,
+                 created_at: new Date().toISOString()
+             };
+             
+             // Show success and close modal
+             const methodsText = selectedMethods.join(', ');
+             showNotification(`Alert created successfully! We'll notify you via ${methodsText}.`, 'success');
+             closeAlertModal();
+             
+             // Clear search input
+             document.getElementById('header-notify-search').value = '';
+             
+             // Reset selected methods to default
+             selectedMethods = ['whatsapp'];
+             
+             console.log('Alert created:', alertData);
+         }
+
+         // Notification system
+         function showNotification(message, type = 'info') {
+             const notification = document.createElement('div');
+             notification.className = `fixed top-24 right-4 px-6 py-4 rounded-xl shadow-lg z-[10001] transition-all duration-300 ${getNotificationClasses(type)}`;
+             notification.innerHTML = `
+                 <div class="flex items-center">
+                     <i class="fas ${getNotificationIcon(type)} mr-3"></i>
+                     <span>${message}</span>
+                     <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-xl leading-none opacity-70 hover:opacity-100">&times;</button>
+                 </div>
+             `;
+             
+             document.body.appendChild(notification);
+             
+             setTimeout(() => {
+                 if (notification.parentElement) {
+                     notification.remove();
+                 }
+             }, 5000);
+         }
+
+         function getNotificationClasses(type) {
+             const classes = {
+                 'success': 'bg-green-500 text-white',
+                 'error': 'bg-red-500 text-white',
+                 'warning': 'bg-yellow-500 text-black',
+                 'info': 'bg-blue-500 text-white'
+             };
+             return classes[type] || classes.info;
+         }
+
+         function getNotificationIcon(type) {
+             const icons = {
+                 'success': 'fa-check-circle',
+                 'error': 'fa-exclamation-circle',
+                 'warning': 'fa-exclamation-triangle',
+                 'info': 'fa-info-circle'
+             };
+             return icons[type] || icons.info;
+         }
+     </script>
+
+    <!-- Modal Notification (add just after <body>) -->
+    <div id="newsletter-modal" class="fixed inset-0 z-[9999] flex items-start justify-center pointer-events-none">
+      <div id="newsletter-modal-content" class="mt-10 bg-green-500 text-white rounded-lg shadow-xl px-8 py-4 font-semibold text-lg hidden pointer-events-auto transition-all duration-300"></div>
+    </div>
+
+    <!-- Newsletter AJAX script -->
+    <script>
+    function showNewsletterModal(message, type = 'success') {
+      const modal = document.getElementById('newsletter-modal-content');
+      modal.textContent = message;
+      modal.className = `mt-10 rounded-lg shadow-xl px-8 py-4 font-semibold text-lg pointer-events-auto transition-all duration-300 ${
+        type === 'success'
+          ? 'bg-green-500 text-white'
+          : 'bg-red-500 text-white'
+      }`;
+      modal.style.display = 'block';
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+      }, 3000);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('newsletter-form');
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const emailInput = form.querySelector('input[type="email"]');
+          const email = emailInput.value;
+          // Simulate AJAX (replace URL with your backend if needed)
+          fetch('https://example.com/newsletter', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+          })
+          .then(() => {
+            showNewsletterModal('Thank you for subscribing!', 'success');
+            emailInput.value = '';
+          })
+          .catch(() => {
+            showNewsletterModal('Subscription failed. Please try again.', 'error');
+          });
+        });
+      }
+    });
+    </script>
+</body>
+</html>

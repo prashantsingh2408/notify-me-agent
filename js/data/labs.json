@@ -1,0 +1,128 @@
+{
+  "labs": [
+    {
+      "id": "watcher-agent",
+      "name": "Watcher Agent",
+      "image": "https://watcher-agent.vercel.app/Marvel-Uatu-hte-Watcher-1024x819.png",
+      "description": "Time. Space. Productivity. Your digital journey is more than a linear path—it's a prism of endless possibility. Every action, every choice, opens new windows of context and insight. I am the Watcher Agent, connected by MCP to expand your content window and unify your digital realities. Work with me and MCP, and unlock the question... \"What if your workflow could see more, remember more, and do more—together?\"",
+      "url": "https://watcher-agent.vercel.app/",
+      "btnText": "Try Now",
+      "btnIcon": "fas fa-external-link-alt",
+      "category": "AI Tools"
+    },
+    {
+      "id": "content-creator",
+      "name": "Content Creator",
+      "icon": "fas fa-pen-fancy",
+      "description": "AI-powered tool to create professional portfolios, resumes, member profiles, and social media content with ease.",
+      "url": "https://content-creator-chat.vercel.app",
+      "btnText": "Visit Project",
+      "btnIcon": "fas fa-external-link-alt",
+      "active": true,
+      "category": "AI Tools"
+    },
+    {
+      "id": "connectivity-matter",
+      "name": "Connectivity Matter",
+      "icon": "fas fa-network-wired",
+      "description": "Building resilient networks with AI-driven solutions for better connectivity.",
+      "url": "https://ai-connectivity-hackathon.vercel.app/",
+      "btnText": "View Project",
+      "btnIcon": "fas fa-external-link-alt",
+      "category": "Productivity"
+    },
+    {
+      "id": "devai",
+      "name": "DevAI",
+      "icon": "fas fa-robot",
+      "description": "Leverage AI to enhance your development workflow.",
+      "url": "https://dev-assist-lake.vercel.app",
+      "btnText": "Visit Project",
+      "btnIcon": "fas fa-external-link-alt",
+      "category": "AI Tools"
+    },
+    {
+      "id": "mentor-ai",
+      "name": "Mentor AI",
+      "icon": "fas fa-project-diagram",
+      "description": "An AI-powered mentoring platform.",
+      "url": "https://mentor-ai-five.vercel.app/",
+      "btnText": "Visit Project",
+      "btnIcon": "fas fa-external-link-alt",
+      "category": "Mentorship"
+    },
+    {
+      "id": "code-games",
+      "name": "Code Games",
+      "icon": "fas fa-gamepad",
+      "description": "Test your Python skills with interactive games and challenges!",
+      "url": "https://game-puzzles.vercel.app/index-ps/index-ps.html",
+      "btnText": "Play Games",
+      "btnIcon": "fas fa-play",
+      "category": "Games"
+    },
+    {
+      "id": "consumer-vaani",
+      "name": "ConsumerVaani",
+      "icon": "fas fa-comments",
+      "description": "A platform empowering consumers to share their voices and experiences.",
+      "url": "https://consumer-vaani.vercel.app/",
+      "btnText": "Visit Project",
+      "btnIcon": "fas fa-external-link-alt",
+      "category": "Consumer"
+    },
+    {
+      "id": "hackathon-search",
+      "name": "Hackathon Search Engine(SonarHack)",
+      "icon": "fas fa-search",
+      "description": "Discover and explore hackathons from around the world in one place.",
+      "url": "https://sonar-hack.vercel.app",
+      "btnText": "Visit Project",
+      "btnIcon": "fas fa-external-link-alt",
+      "category": "Discovery"
+    },
+    {
+      "id": "consume-wisely",
+      "name": "Consume Wisely",
+      "icon": "fas fa-check-circle",
+      "description": "Make informed decisions and shop smarter with data-driven insights.",
+      "url": "https://consume-wisely.vercel.app",
+      "btnText": "Visit Project",
+      "btnIcon": "fas fa-external-link-alt",
+      "category": "Consumer"
+    },
+    {
+      "id": "wise-move",
+      "name": "Wise Move",
+      "icon": "fas fa-map-marked-alt text-[var(--accent-color)] text-2xl",
+      "description": "Helping users make smarter relocation decisions with interactive maps and city data.",
+      "url": "https://wise-move.vercel.app/",
+      "btnText": "Visit Project",
+      "btnIcon": "fas fa-external-link-alt",
+      "active": true,
+      "category": "Relocation"
+    },
+    {
+      "id": "comp-pro-ai",
+      "name": "CompPro AI",
+      "icon": "fas fa-brain",
+      "description": "Your AI-powered competitive programming companion. Get real-time feedback, intelligent debugging, and personalized guidance for LeetCode, Codeforces, HackerRank, and more.",
+      "url": "https://cp-ai.vercel.app/",
+      "btnText": "Try Now",
+      "btnIcon": "fas fa-external-link-alt",
+      "active": true,
+      "category": "AI Tools"
+    },
+    {
+      "id": "ai-search-engine",
+      "name": "AI Search Engine",
+      "icon": "fas fa-search",
+      "description": "AI-powered search for special purposes where others fail.",
+      "url": "https://a-search-engine.vercel.app/",
+      "btnText": "Try Now",
+      "btnIcon": "fas fa-external-link-alt",
+      "active": true,
+      "category": "Discovery"
+    }
+  ]
+} 

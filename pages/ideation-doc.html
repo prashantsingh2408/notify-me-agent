@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hackathon Circle - Ideation Doc</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="h-screen overflow-hidden">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-lg fixed w-full z-50 h-16 flex items-center">
+        <div class="max-w-7xl mx-auto px-4 w-full flex justify-between items-center">
+            <a href="index.html" class="text-gray-600 hover:text-blue-600 flex items-center space-x-2">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Home</span>
+            </a>
+            <h1 class="text-xl font-bold text-gray-800">Hackathon Ideation Spreadsheet</h1>
+            <a href="https://docs.google.com/document/d/1rsO7bp812vfnj0eCSnatMgy0M1X5ythd0a8ymMFxij8/edit?usp=sharing" 
+               target="_blank"
+               class="text-gray-600 hover:text-blue-600 flex items-center space-x-2">
+                <span>Open in Google Doc</span>
+                <i class="fas fa-external-link-alt"></i>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Google Doc Embed -->
+    <div class="absolute top-16 w-full h-[calc(100vh-4rem)]">
+        <iframe src="https://docs.google.com/document/d/e/2PACX-1vSOlM8V3hYxrvJZMF5zvGERIISQvPkv9Dvs5RyG7iMQ1QknL4ksd20I99VV2SkBZZ35tgZqFkV0-6hl/pub?embedded=true" 
+                class="w-full h-full border-0"></iframe>
+    </div>
+</body>
+
+</html>

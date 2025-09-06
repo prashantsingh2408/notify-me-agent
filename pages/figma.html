@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hackathon Circle - Ideation Board</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-lg fixed w-full z-50 h-16">
+        <div class="max-w-7xl mx-auto px-4 h-full">
+            <div class="flex justify-between items-center h-full">
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="text-gray-600 hover:text-primary-600 flex items-center space-x-2">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Back to Home</span>
+                    </a>
+                </div>
+                <div class="flex items-center">
+                    <h1 class="text-xl font-bold text-gray-800">Hackathon Ideation Board</h1>
+                </div>
+                <div class="flex items-center">
+                    <a href="https://www.figma.com/board/82ZcQDpTlpzhgZklHSkRso/Hackathon-Ideation" 
+                       target="_blank"
+                       class="text-gray-600 hover:text-primary-600 flex items-center space-x-2">
+                        <span>Open in Figma</span>
+                        <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Figma Board -->
+    <div class="w-full h-screen pt-16">
+        <iframe 
+            src="https://embed.figma.com/board/82ZcQDpTlpzhgZklHSkRso/Hackathon-Ideation?node-id=0-1&embed-host=share"
+            class="w-full h-full border-0"
+            allowfullscreen>
+        </iframe>
+    </div>
+</body>
+</html>

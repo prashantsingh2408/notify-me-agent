@@ -1,0 +1,28 @@
+.rain-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.3;
+    mix-blend-mode: screen;
+    transition: opacity 0.3s ease-out;
+}
+
+/* Rain effect status icon */
+.rain-status {
+    color: var(--accent-color);
+    transition: all 0.3s ease;
+}
+
+.theme-option:hover .rain-status {
+    transform: scale(1.2);
+}
+
+/* Update hero section to accommodate both animations */
+.hero-section {
+    position: relative;
+    overflow: hidden;
+} 

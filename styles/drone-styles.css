@@ -1,0 +1,45 @@
+/* Drone-specific styles */
+.drone-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease-in;
+    background-color: transparent;
+}
+
+.drone-canvas.loaded {
+    opacity: 1;
+}
+
+.hero-section {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Make hero content appear above canvas */
+.hero-section > div {
+    position: relative;
+    z-index: 2;
+}
+
+/* Loading overlay */
+.drone-loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: inherit; /* Inherit from parent instead of using var */
+    z-index: 3;
+    opacity: 1;
+    transition: opacity 0.5s ease-out;
+}
+
+.drone-loading-overlay.fade-out {
+    opacity: 0;
+} 
