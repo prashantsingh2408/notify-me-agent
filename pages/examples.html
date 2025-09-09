@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examples - NotifyMe</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="../styles/core/base.css">
+    <link rel="stylesheet" href="../styles/core/color-themes.css">
+    <link rel="stylesheet" href="../styles/core/components.css">
+</head>
+<body class="bg-[var(--bg-color)] font-sans min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200/20 dark:border-gray-700/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="../index.html" class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-bell text-white text-sm"></i>
+                        </div>
+                        <span class="font-bold text-xl text-gray-900 dark:text-white">NotifyMe</span>
+                    </a>
+                </div>
+                
+                <!-- Navigation Links -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="alerts.html" class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">Alerts</a>
+                    <a href="examples.html" class="text-sm font-medium text-blue-600 dark:text-blue-400">Examples</a>
+                    <a href="features.html" class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">Features</a>
+                    <button onclick="openAlertModal('')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200">
+                        Create Alert
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="py-16 bg-gradient-to-b from-[var(--bg-color)] to-[var(--accent-light)]/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold text-[var(--text-color)] mb-6">
+                Real-World Examples
+            </h1>
+            <p class="text-xl text-[var(--secondary-text)] max-w-3xl mx-auto mb-8">
+                Discover how NotifyMe can help you stay informed across different industries and use cases
+            </p>
+            <div class="flex flex-wrap justify-center gap-3">
+                <span class="px-4 py-2 bg-[var(--accent-color)]/10 text-[var(--accent-color)] rounded-full text-sm font-medium">Financial Markets</span>
+                <span class="px-4 py-2 bg-[var(--accent-color)]/10 text-[var(--accent-color)] rounded-full text-sm font-medium">E-commerce</span>
+                <span class="px-4 py-2 bg-[var(--accent-color)]/10 text-[var(--accent-color)] rounded-full text-sm font-medium">News & Media</span>
+                <span class="px-4 py-2 bg-[var(--accent-color)]/10 text-[var(--accent-color)] rounded-full text-sm font-medium">Weather</span>
+                <span class="px-4 py-2 bg-[var(--accent-color)]/10 text-[var(--accent-color)] rounded-full text-sm font-medium">Technology</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Examples Grid -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="grid gap-8 md:gap-12">
+            
+            <!-- Financial Monitoring -->
+            <div class="grid lg:grid-cols-2 gap-8 items-center">
+                <div>
+                    <div class="inline-flex items-center px-4 py-2 bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-full text-sm font-medium mb-4">
+                        <i class="fas fa-chart-line mr-2"></i>
+                        Financial Markets
+                    </div>
+                    <h2 class="text-3xl font-bold text-[var(--text-color)] mb-4">Stock Price Monitoring</h2>
+                    <p class="text-lg text-[var(--secondary-text)] mb-6">
+                        Stay ahead of market movements with real-time stock price alerts. Get notified when your favorite stocks hit target prices, experience significant volatility, or cross important technical indicators.
+                    </p>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3 text-[var(--secondary-text)]">
+                            <i class="fas fa-check text-green-500"></i>
+                            <span>Real-time price tracking for any stock symbol</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-[var(--secondary-text)]">
+                            <i class="fas fa-check text-green-500"></i>
+                            <span>Percentage change alerts (±5%, ±10%, etc.)</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-[var(--secondary-text)]">
+                            <i class="fas fa-check text-green-500"></i>
+                            <span>Volume spike notifications</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-[var(--secondary-text)]">
+                            <i class="fas fa-check text-green-500"></i>
+                            <span>Support and resistance level alerts</span>
+                        </div>
+                    </div>
+                    <button onclick="createStockAlert()" class="mt-6 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2">
+                        <i class="fas fa-plus"></i>
+                        Create Stock Alert
+                    </button>
+                </div>
+                <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl p-8">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                        <h3 class="font-semibold text-[var(--text-color)] mb-4">Example Alert</h3>
+                        <div class="space-y-3 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-[var(--secondary-text)]">Stock:</span>
+                                <span class="font-medium text-[var(--text-color)]">TSLA</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-[var(--secondary-text)]">Condition:</span>
+                                <span class="font-medium text-[var(--text-color)]">Price > $250</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-[var(--secondary-text)]">Current:</span>
+                                <span class="font-medium text-green-600">$242.18</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-[var(--secondary-text)]">Status:</span>
+                                <span class="px-2 py-1 bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 text-xs rounded-full">Monitoring</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="border-[var(--border-color)]">
+
+            <!-- E-commerce Price Tracking -->
+            <div class="grid lg:grid-cols-2 gap-8 items-center">
+                <div class="order-2 lg:order-1">
+                    <div class="bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-2xl p-8">
+                        <div class="space-y-4">
+                            <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-lg">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-mobile-alt text-gray-600"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-[var(--text-color)]">iPhone 15 Pro</h4>
+                                        <p class="text-xs text-[var(--secondary-text)]">Apple.com</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-2xl font-bold text-[var(--text-color)]">$999</span>
+                                    <span class="px-2 py-1 bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 text-xs rounded-full">Price Drop!</span>
+                                </div>
+                                <p class="text-xs text-green-600 mt-1">$100 below target price</p>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-lg">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-gamepad text-gray-600"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-[var(--text-color)]">PlayStation 5</h4>
+                                        <p class="text-xs text-[var(--secondary-text)]">Best Buy</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-[var(--secondary-text)]">Out of Stock</span>
+                                    <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 text-xs rounded-full">Monitoring</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-1 lg:order-2">
+                    <div class="inline-flex items-center px-4 py-2 bg-orange-100 dark:bg-orange-900/20 text-orange-700 dark:text-orange-400 rounded-full text-sm font-medium mb-4">
+                        <i class="fas fa-shopping-cart mr-2"></i>
+                        E-commerce
+                    </div>
+                    <h2 class="text-3xl font-bold text-[var(--text-color)] mb-4">Price Drop Alerts</h2>
+                    <p class="text-lg text-[var(--secondary-text)] mb-6">
+                        Never miss a good deal again. Monitor product prices across multiple retailers and get notified when items go on sale, come back in stock, or hit your target price.
+                    </p>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3 text-[var(--secondary-text)]">
+                            <i class="fas fa-check text-orange-500"></i>
+                            <span>Track prices across major retailers</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-[var(--secondary-text)]">
+                            <i class="fas fa-check text-orange-500"></i>
+                            <span>Stock availability notifications</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-[var(--secondary-text)]">
+                            <i class="fas fa-check text-orange-500"></i>
+                            <span>Price history and trend analysis</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-[var(--secondary-text)]">
+                            <i class="fas fa-check text-orange-500"></i>
+                            <span>Coupon and discount code alerts</span>
+                        </div>
+                    </div>
+                    <button onclick="createShoppingAlert()" class="mt-6 bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2">
+                        <i class="fas fa-plus"></i>
+                        Create Shopping Alert
+                    </button>
+                </div>
+            </div>
+
+            <hr class="border-[var(--border-color)]">
+
+            <!-- News Monitoring -->
+            <div class="grid lg:grid-cols-2 gap-8 items-center">
+                <div>
+                    <div class="inline-flex items-center px-4 py-2 bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-full text-sm font-medium mb-4">
+                        <i class="fas fa-newspaper mr-2"></i>
+                        News & Media
+                    </div>
+                    <h2 class="text-3xl font-bold text-[var(--text-color)] mb-4">Breaking News Alerts</h2>
+                    <p class="text-lg text-[var(--secondary-text)] mb-6">
+                        Stay informed about the topics that matter to you. Get instant notifications when news breaks about your industry, favorite companies, or areas of interest.
+                    </p>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3 text-[var(--secondary-text)]">
+                            <i class="fas fa-check text-blue-500"></i>
+                            <span>Monitor multiple news sources simultaneously</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-[var(--secondary-text)]">
+                            <i class="fas fa-check text-blue-500"></i>
+                            <span>Keyword and phrase-based filtering</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-[var(--secondary-text)]">
+                            <i class="fas fa-check text-blue-500"></i>
+                            <span>Company and industry-specific alerts</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-[var(--secondary-text)]">
+                            <i class="fas fa-check text-blue-500"></i>
+                            <span>Real-time breaking news notifications</span>
+                        </div>
+                    </div>
+                    <button onclick="createNewsAlert()" class="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2">
+                        <i class="fas fa-plus"></i>
+                        Create News Alert
+                    </button>
+                </div>
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl p-8">
+                    <div class="space-y-4">
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-lg border-l-4 border-red-500">
+                            <div class="flex items-start gap-3">
+                                <span class="px-2 py-1 bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 text-xs rounded-full">BREAKING</span>
+                                <div class="flex-1">
+                                    <h4 class="font-medium text-[var(--text-color)] text-sm">OpenAI Announces GPT-5</h4>
+                                    <p class="text-xs text-[var(--secondary-text)] mt-1">Major breakthrough in AI capabilities announced...</p>
+                                    <p class="text-xs text-[var(--secondary-text)] mt-2">2 minutes ago • TechCrunch</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-lg">
+                            <div class="flex items-start gap-3">
+                                <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 text-xs rounded-full">TECH</span>
+                                <div class="flex-1">
+                                    <h4 class="font-medium text-[var(--text-color)] text-sm">Tesla Quarterly Results</h4>
+                                    <p class="text-xs text-[var(--secondary-text)] mt-1">Company reports record deliveries...</p>
+                                    <p class="text-xs text-[var(--secondary-text)] mt-2">15 minutes ago • Reuters</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="border-[var(--border-color)]">
+
+            <!-- More Examples -->
+            <div class="text-center">
+                <h2 class="text-3xl font-bold text-[var(--text-color)] mb-6">More Use Cases</h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl p-6 text-center hover:shadow-md transition-shadow duration-200">
+                        <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-cloud-rain text-purple-600"></i>
+                        </div>
+                        <h3 class="font-semibold text-[var(--text-color)] mb-2">Weather Alerts</h3>
+                        <p class="text-sm text-[var(--secondary-text)] mb-4">Get notified about weather conditions, rain forecasts, and severe weather warnings</p>
+                        <button onclick="createWeatherAlert()" class="text-purple-600 hover:text-purple-700 font-medium text-sm">Try Weather Alerts</button>
+                    </div>
+                    
+                    <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl p-6 text-center hover:shadow-md transition-shadow duration-200">
+                        <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-bitcoin-sign text-yellow-600"></i>
+                        </div>
+                        <h3 class="font-semibold text-[var(--text-color)] mb-2">Crypto Tracking</h3>
+                        <p class="text-sm text-[var(--secondary-text)] mb-4">Monitor cryptocurrency prices, market cap changes, and trading volumes</p>
+                        <button onclick="createCryptoAlert()" class="text-yellow-600 hover:text-yellow-700 font-medium text-sm">Try Crypto Alerts</button>
+                    </div>
+                    
+                    <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl p-6 text-center hover:shadow-md transition-shadow duration-200">
+                        <div class="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-lg flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-briefcase text-red-600"></i>
+                        </div>
+                        <h3 class="font-semibold text-[var(--text-color)] mb-2">Job Alerts</h3>
+                        <p class="text-sm text-[var(--secondary-text)] mb-4">Never miss relevant job postings in your field or preferred companies</p>
+                        <button onclick="createJobAlert()" class="text-red-600 hover:text-red-700 font-medium text-sm">Try Job Alerts</button>
+                    </div>
+                    
+                    <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl p-6 text-center hover:shadow-md transition-shadow duration-200">
+                        <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-baseball-ball text-green-600"></i>
+                        </div>
+                        <h3 class="font-semibold text-[var(--text-color)] mb-2">Sports Updates</h3>
+                        <p class="text-sm text-[var(--secondary-text)] mb-4">Follow your favorite teams and get score updates, game results, and news</p>
+                        <button onclick="createSportsAlert()" class="text-green-600 hover:text-green-700 font-medium text-sm">Try Sports Alerts</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- CTA Section -->
+    <section class="py-16 bg-gradient-to-b from-[var(--accent-light)]/5 to-[var(--bg-color)]">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-[var(--text-color)] mb-6">Ready to Get Started?</h2>
+            <p class="text-xl text-[var(--secondary-text)] mb-8">
+                Create your first alert in minutes and join thousands of users staying informed
+            </p>
+            <button onclick="openAlertModal('')" class="bg-[var(--accent-color)] hover:bg-[var(--accent-dark)] text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-200 flex items-center gap-3 mx-auto">
+                <i class="fas fa-rocket"></i>
+                Create Your First Alert
+            </button>
+        </div>
+    </section>
+
+    <script>
+        // Placeholder functions for different alert types
+        function openAlertModal(preset) {
+            alert('Alert creation modal would open here with: ' + preset);
+        }
+        
+        function createStockAlert() {
+            openAlertModal('Stock price monitoring for TSLA when price > $250');
+        }
+        
+        function createShoppingAlert() {
+            openAlertModal('Price drop alert for products below target price');
+        }
+        
+        function createNewsAlert() {
+            openAlertModal('News alerts about AI and technology updates');
+        }
+        
+        function createWeatherAlert() {
+            openAlertModal('Weather alert for rain forecast in your area');
+        }
+        
+        function createCryptoAlert() {
+            openAlertModal('Cryptocurrency price alert for Bitcoin > $50000');
+        }
+        
+        function createJobAlert() {
+            openAlertModal('Job posting alert for Software Engineer positions');
+        }
+        
+        function createSportsAlert() {
+            openAlertModal('Sports update alert for your favorite team scores');
+        }
+    </script>
+</body>
+</html>

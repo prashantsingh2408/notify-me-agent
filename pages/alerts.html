@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Alerts - NotifyMe</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="../styles/core/base.css">
+    <link rel="stylesheet" href="../styles/core/color-themes.css">
+    <link rel="stylesheet" href="../styles/core/components.css">
+</head>
+<body class="bg-[var(--bg-color)] font-sans min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200/20 dark:border-gray-700/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="../index.html" class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-bell text-white text-sm"></i>
+                        </div>
+                        <span class="font-bold text-xl text-gray-900 dark:text-white">NotifyMe</span>
+                    </a>
+                </div>
+                
+                <!-- Navigation Links -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="alerts.html" class="text-sm font-medium text-blue-600 dark:text-blue-400">Alerts</a>
+                    <a href="examples.html" class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">Examples</a>
+                    <a href="features.html" class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">Features</a>
+                    <button onclick="openAlertModal('')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200">
+                        Create Alert
+                    </button>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors duration-200">
+                        <i class="fas fa-bars text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-bold text-[var(--text-color)] mb-2">My Alerts</h1>
+                    <p class="text-[var(--secondary-text)] text-lg">Manage your active notifications and monitoring alerts</p>
+                </div>
+                <button onclick="openAlertModal('')" class="bg-[var(--accent-color)] hover:bg-[var(--accent-dark)] text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2">
+                    <i class="fas fa-plus"></i>
+                    New Alert
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl p-6 shadow-sm">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-[var(--secondary-text)] text-sm font-medium">Total Alerts</p>
+                        <p class="text-2xl font-bold text-[var(--text-color)]">24</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-bell text-blue-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl p-6 shadow-sm">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-[var(--secondary-text)] text-sm font-medium">Active</p>
+                        <p class="text-2xl font-bold text-green-600">18</p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl p-6 shadow-sm">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-[var(--secondary-text)] text-sm font-medium">Triggered Today</p>
+                        <p class="text-2xl font-bold text-orange-600">7</p>
+                    </div>
+                    <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-fire text-orange-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl p-6 shadow-sm">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-[var(--secondary-text)] text-sm font-medium">Paused</p>
+                        <p class="text-2xl font-bold text-gray-500">6</p>
+                    </div>
+                    <div class="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-pause text-gray-500 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters and Search -->
+        <div class="flex flex-col sm:flex-row gap-4 mb-6">
+            <div class="flex-1">
+                <input type="text" placeholder="Search alerts..." 
+                       class="w-full px-4 py-2 border border-[var(--border-color)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)] focus:border-transparent">
+            </div>
+            <div class="flex gap-2">
+                <select class="px-4 py-2 border border-[var(--border-color)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)]">
+                    <option>All Status</option>
+                    <option>Active</option>
+                    <option>Paused</option>
+                    <option>Triggered</option>
+                </select>
+                <select class="px-4 py-2 border border-[var(--border-color)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)]">
+                    <option>All Categories</option>
+                    <option>Stock Alerts</option>
+                    <option>News</option>
+                    <option>Weather</option>
+                    <option>Shopping</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Alerts List -->
+        <div class="space-y-4">
+            <!-- Sample Alert 1 -->
+            <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200">
+                <div class="flex items-start justify-between">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-chart-line text-green-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-[var(--text-color)] mb-1">Tesla Stock Price Alert</h3>
+                            <p class="text-[var(--secondary-text)] text-sm mb-2">Notify when TSLA crosses $250</p>
+                            <div class="flex items-center space-x-4 text-xs text-[var(--secondary-text)]">
+                                <span class="flex items-center gap-1">
+                                    <i class="fas fa-clock"></i>
+                                    Created 2 days ago
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <i class="fas fa-bell"></i>
+                                    Last checked 5 min ago
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="px-2 py-1 bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 text-xs font-medium rounded-full">Active</span>
+                        <button class="p-2 text-[var(--secondary-text)] hover:text-[var(--text-color)] transition-colors">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sample Alert 2 -->
+            <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200">
+                <div class="flex items-start justify-between">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-newspaper text-blue-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-[var(--text-color)] mb-1">OpenAI News Updates</h3>
+                            <p class="text-[var(--secondary-text)] text-sm mb-2">Alert me about new OpenAI announcements</p>
+                            <div class="flex items-center space-x-4 text-xs text-[var(--secondary-text)]">
+                                <span class="flex items-center gap-1">
+                                    <i class="fas fa-clock"></i>
+                                    Created 1 week ago
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <i class="fas fa-bell"></i>
+                                    Triggered yesterday
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="px-2 py-1 bg-orange-100 dark:bg-orange-900/20 text-orange-700 dark:text-orange-400 text-xs font-medium rounded-full">Triggered</span>
+                        <button class="p-2 text-[var(--secondary-text)] hover:text-[var(--text-color)] transition-colors">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sample Alert 3 -->
+            <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200">
+                <div class="flex items-start justify-between">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-shopping-cart text-purple-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-[var(--text-color)] mb-1">iPhone 15 Price Drop</h3>
+                            <p class="text-[var(--secondary-text)] text-sm mb-2">Notify when iPhone 15 drops below $800</p>
+                            <div class="flex items-center space-x-4 text-xs text-[var(--secondary-text)]">
+                                <span class="flex items-center gap-1">
+                                    <i class="fas fa-clock"></i>
+                                    Created 3 days ago
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <i class="fas fa-pause"></i>
+                                    Paused
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-xs font-medium rounded-full">Paused</span>
+                        <button class="p-2 text-[var(--secondary-text)] hover:text-[var(--text-color)] transition-colors">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State (hidden when there are alerts) -->
+        <div class="text-center py-12 hidden">
+            <div class="w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-bell-slash text-gray-400 text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-medium text-[var(--text-color)] mb-2">No alerts yet</h3>
+            <p class="text-[var(--secondary-text)] mb-6">Create your first alert to get started monitoring the web</p>
+            <button onclick="openAlertModal('')" class="bg-[var(--accent-color)] hover:bg-[var(--accent-dark)] text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200">
+                Create Your First Alert
+            </button>
+        </div>
+    </main>
+
+    <script>
+        // Placeholder for alert modal function
+        function openAlertModal(preset) {
+            alert('Alert creation modal would open here with: ' + preset);
+        }
+    </script>
+</body>
+</html>

@@ -66,16 +66,7 @@ p {
     animation: pulseSlow 2s infinite;
 }
 
-/* Navbar scroll animations */
-nav.scroll-down {
-    transform: translateY(-100%);
-    transition: transform 0.3s ease-in-out;
-}
-
-nav.scroll-up {
-    transform: translateY(0);
-    transition: transform 0.3s ease-in-out;
-}
+/* Fixed navbar - always visible */
 
 /* Animation keyframes */
 @keyframes slideUp {
@@ -135,6 +126,14 @@ html {
 /* Hero section gradient */
 .hero-gradient {
     position: relative;
+    background: linear-gradient(
+        135deg,
+        var(--bg-color) 0%,
+        rgba(99, 102, 241, 0.02) 25%,
+        rgba(168, 85, 247, 0.02) 50%,
+        rgba(236, 72, 153, 0.02) 75%,
+        var(--bg-color) 100%
+    );
 }
 
 .hero-gradient::before {
@@ -144,8 +143,24 @@ html {
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at top right, var(--accent-light) 0%, transparent 60%);
-    opacity: 0.1;
+    background: 
+        radial-gradient(600px circle at 0% 0%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+        radial-gradient(800px circle at 100% 0%, rgba(120, 119, 198, 0.05) 0%, transparent 50%),
+        radial-gradient(400px circle at 50% 100%, rgba(120, 119, 198, 0.1) 0%, transparent 50%);
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.hero-gradient::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.02) 50%, transparent 70%),
+        linear-gradient(-45deg, transparent 30%, rgba(255, 255, 255, 0.02) 50%, transparent 70%);
     pointer-events: none;
 }
 
@@ -252,11 +267,272 @@ button, a {
 #scroll-progress {
     position: fixed;
     top: 0;
-    width: 100%;;
-    height: 3px;
-    background: var(--accent-color);
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, 
+        var(--accent-color) 0%, 
+        rgba(168, 85, 247, 0.8) 50%, 
+        rgba(236, 72, 153, 0.8) 100%
+    );
     z-index: 9999;
     transform-origin: left;
     transform: scaleX(0);
     transition: transform 0.1s ease;
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
+}
+
+/* Modern glass morphism utilities */
+.glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-dark {
+    background: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Enhanced shadow effects */
+.shadow-glow {
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.15);
+}
+
+.shadow-glow:hover {
+    box-shadow: 0 0 30px rgba(168, 85, 247, 0.25);
+}
+
+/* Modern gradient text */
+.gradient-text {
+    background: linear-gradient(135deg, 
+        var(--accent-color) 0%, 
+        rgba(168, 85, 247, 0.9) 50%, 
+        rgba(236, 72, 153, 0.9) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Floating animation for modern elements */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.float {
+    animation: float 6s ease-in-out infinite;
+}
+
+/* Enhanced pulse animation */
+@keyframes modernPulse {
+    0%, 100% { 
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% { 
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+}
+
+.pulse-modern {
+    animation: modernPulse 3s ease-in-out infinite;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+    .hero-gradient {
+        padding: 2rem 1rem;
+    }
+    
+    .hero-gradient h1 {
+        font-size: 2.5rem !important;
+        line-height: 1.1;
+    }
+    
+    .hero-gradient p {
+        font-size: 1.25rem !important;
+        margin-bottom: 2rem !important;
+    }
+    
+    /* Mobile card adjustments */
+    .group {
+        transform: none !important;
+        transition: box-shadow 0.3s ease;
+    }
+    
+    .group:active {
+        transform: scale(0.98);
+    }
+    
+    /* Mobile search improvements */
+    #header-notify-search {
+        padding: 1rem !important;
+        font-size: 1rem !important;
+        border-radius: 1.5rem !important;
+    }
+    
+    /* Reduce motion on mobile */
+    .animate-bounce,
+    .float,
+    .pulse-modern {
+        animation: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .hero-gradient h1 {
+        font-size: 2rem !important;
+    }
+    
+    .hero-gradient p {
+        font-size: 1.125rem !important;
+    }
+    
+    /* Stack video container better on small screens */
+    .max-w-5xl {
+        max-width: 100%;
+        padding: 0 1rem;
+    }
+}
+
+/* Enhanced focus states for accessibility */
+@media (prefers-contrast: high) {
+    .glass,
+    .glass-dark {
+        border-width: 2px;
+        border-color: var(--accent-color);
+    }
+    
+    .shadow-glow {
+        outline: 2px solid var(--accent-color);
+        outline-offset: 2px;
+    }
+}
+
+/* Modern Navbar Styles */
+#main-nav {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+/* Navbar scroll behavior */
+#main-nav.scrolled {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Search input focus animation */
+#header-notify-search:focus {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Clean dropdown styles */
+#theme-dropdown {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.dark #theme-dropdown {
+    background: rgba(31, 41, 55, 0.95);
+}
+
+/* Mobile menu animations */
+#mobile-menu {
+    transform: translateY(-10px);
+    opacity: 0;
+    transition: all 0.2s ease-out;
+}
+
+#mobile-menu:not(.hidden) {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Button hover effects */
+nav button:hover {
+    transform: translateY(-1px);
+}
+
+nav button:active {
+    transform: translateY(0);
+}
+
+/* Modern Landing Page Styles */
+.section-badge {
+    background: linear-gradient(135deg, var(--accent-color)/10, var(--hover-color)/10);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--accent-color)/20;
+}
+
+.section-title {
+    background: linear-gradient(135deg, var(--text-color), var(--secondary-text));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.feature-card {
+    background: rgba(var(--bg-color-rgb), 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+    border-color: var(--accent-color)/30;
+}
+
+/* Improved animations */
+@keyframes float {
+    0%, 100% { 
+        transform: translateY(0px) rotate(0deg);
+    }
+    33% { 
+        transform: translateY(-10px) rotate(1deg);
+    }
+    66% { 
+        transform: translateY(-5px) rotate(-1deg);
+    }
+}
+
+.animate-float {
+    animation: float 6s ease-in-out infinite;
+}
+
+/* Enhanced gradients */
+.gradient-bg {
+    background: linear-gradient(
+        135deg,
+        var(--bg-color) 0%,
+        var(--accent-light)/20 25%,
+        var(--bg-color) 50%,
+        var(--accent-light)/10 75%,
+        var(--bg-color) 100%
+    );
+}
+
+/* Improved typography scale */
+.text-hero {
+    font-size: clamp(2.5rem, 8vw, 7rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+.text-section-title {
+    font-size: clamp(2rem, 6vw, 4rem);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+}
+
+/* Better spacing system */
+.space-section {
+    padding: clamp(4rem, 8vw, 8rem) 0;
+}
+
+.space-section-sm {
+    padding: clamp(3rem, 6vw, 6rem) 0;
 }

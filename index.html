@@ -27,6 +27,7 @@
     <script type="module" src="js/labs.js"></script> <!-- Load data from labs.json as module -->
     <script type="module" src="js/rain.js"></script>
     <script type="module" src="js/documents.js"></script>
+    <script src="js/search.js"></script>
 </head>
 <body class="bg-[var(--bg-color)] font-sans">
     <!-- Loading Screen -->
@@ -40,46 +41,36 @@
  
     
      <!-- Navbar -->
-     <nav class="fixed w-full top-0 transition-all duration-300 backdrop-blur-md" id="main-nav" style="z-index: 1000; position: fixed; overflow: visible; background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%), var(--bg-color); border-bottom: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
-         <div class="max-w-7xl mx-auto px-6 relative" style="overflow: visible;">
-             <!-- Main Navigation Row -->
-             <div class="flex items-center justify-between h-20">
+     <nav class="fixed w-full top-0 z-50 transition-all duration-300" id="main-nav">
+         <div class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200/20 dark:border-gray-700/20">
+             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                 <div class="flex items-center justify-between h-16">
                  <!-- Logo -->
                  <div class="flex items-center flex-shrink-0">
-                     <a href="#" class="flex items-center space-x-3 group">
-                         <div class="relative">
-                             <div class="w-12 h-12 bg-gradient-to-br from-[var(--accent-color)] to-[var(--accent-dark)] rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-                                 <i class="fas fa-bell text-white text-xl"></i>
-                             </div>
-                             <div class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-pulse"></div>
+                     <a href="#" class="flex items-center space-x-3">
+                         <div class="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                             <i class="fas fa-bell text-white text-sm"></i>
                          </div>
-                         <div class="flex flex-col">
-                             <span class="font-bold text-2xl bg-gradient-to-r from-[var(--accent-color)] to-[var(--accent-dark)] bg-clip-text text-transparent">NotifyMe</span>
-                             <span class="text-xs text-[var(--text-color)]/60 font-medium">Smart Alerts</span>
-                         </div>
+                         <span class="font-bold text-xl text-gray-900 dark:text-white">NotifyMe</span>
                      </a>
                  </div>
                  
                  <!-- Main Search Input in Header -->
-                 <div class="flex-1 max-w-lg mx-6 hidden md:block" style="z-index: 1002; position: relative; overflow: visible;">
-                     <div class="relative">
-                         <input 
-                             id="header-notify-search" 
-                             type="text" 
-                             placeholder="Notify me when..." 
-                             class="w-full px-6 py-3.5 text-base rounded-2xl border-0 focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)]/50 bg-white/10 backdrop-blur-sm text-[var(--text-color)] placeholder-[var(--text-color)]/50 shadow-lg transition-all duration-300 hover:bg-white/15" 
-                             onfocus="stopTypewriterEffect(); showHeaderSuggestions()"
-                             onblur="hideHeaderSuggestions()"
-                             oninput="handleTypingSuggestions(this.value)"
-                             onkeypress="handleEnterKey(event)"
-                             style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);"
-                         />
-                         <button class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-[var(--accent-color)] to-[var(--accent-dark)] text-white p-3 rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105" onclick="createAlertFromSearch()">
-                             <div class="relative">
-                                 <i class="fas fa-bell text-base"></i>
-                                 <i class="fas fa-plus text-xs absolute -top-1 -right-1"></i>
-                             </div>
-                         </button>
+                     <div class="flex-1 max-w-md mx-8 hidden md:block">
+                         <div class="relative">
+                             <input 
+                                 id="header-notify-search" 
+                                 type="text" 
+                                 placeholder="Search or create alert..." 
+                                 class="w-full pl-4 pr-12 py-2.5 text-sm bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                                 onfocus="stopTypewriterEffect(); showHeaderSuggestions()"
+                                 onblur="hideHeaderSuggestions()"
+                                 oninput="handleTypingSuggestions(this.value)"
+                                 onkeypress="handleEnterKey(event)"
+                             />
+                             <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500 transition-colors duration-200" onclick="handleSearchSubmit()">
+                                 <i class="fas fa-search text-sm"></i>
+                             </button>
                          
                          <!-- Header Suggestions Dropdown - Inside search container -->
                          <div id="header-suggestions" class="absolute top-full left-0 right-0 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl mt-2 hidden border border-gray-200 dark:border-gray-700" style="z-index: 10000;">
@@ -109,154 +100,202 @@
                      </div>
                  </div>
                  
-                <!-- Navigation Menu -->
-                <div class="hidden md:flex items-center space-x-2 flex-shrink-0">
-                     <div class="flex items-center space-x-1">
-                         <a href="#notifications" class="nav-link px-4 py-2.5 rounded-xl text-sm font-medium text-[var(--text-color)]/80 hover:text-[var(--text-color)] hover:bg-white/10 transition-all duration-300 backdrop-blur-sm">My Alerts</a>
-                         <a href="#create-alert" class="nav-link px-4 py-2.5 rounded-xl text-sm font-medium text-[var(--text-color)]/80 hover:text-[var(--text-color)] hover:bg-white/10 transition-all duration-300 backdrop-blur-sm">Create Alert</a>
-                         <a href="#use-cases" class="nav-link px-4 py-2.5 rounded-xl text-sm font-medium text-[var(--text-color)]/80 hover:text-[var(--text-color)] hover:bg-white/10 transition-all duration-300 backdrop-blur-sm">Use Cases</a>
-                         <a href="#features" class="nav-link px-4 py-2.5 rounded-xl text-sm font-medium text-[var(--text-color)]/80 hover:text-[var(--text-color)] hover:bg-white/10 transition-all duration-300 backdrop-blur-sm">Capabilities</a>
-                     </div>
-                     <div class="flex items-center space-x-2">
-                         <!-- Settings Button -->
-                         <button 
-                             onclick="openSettingsModal()"
-                             class="w-12 h-12 rounded-xl transition-all duration-300 hover:scale-105 flex items-center justify-center bg-white/10 backdrop-blur-sm hover:bg-white/20 shadow-lg hover:shadow-xl border border-white/20">
-                             <i class="fas fa-cog text-xl text-[var(--text-color)]"></i>
-                         </button>
-                         
-                         <!-- Theme Button -->
-                         <div class="relative theme-btn-wrapper">
-                             <button 
-                                 onclick="toggleThemeDropdown()"
-                                 class="theme-btn w-12 h-12 rounded-xl transition-all duration-300 hover:scale-105 flex items-center justify-center bg-white/10 backdrop-blur-sm hover:bg-white/20 shadow-lg hover:shadow-xl border border-white/20">
-                                 <i class="fas fa-palette text-xl text-[var(--text-color)]"></i>
-                             </button>
+                    <!-- Navigation Links -->
+                    <div class="hidden md:flex items-center space-x-6">
+                        <a href="#notifications" class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">Alerts</a>
+                        <a href="#use-cases" class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">Examples</a>
+                        <a href="#features" class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">Features</a>
+                        <button onclick="openAlertModal('')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200">
+                            Create Alert
+                        </button>
+                        
+                        <!-- Settings & Theme -->
+                        <div class="flex items-center space-x-2">
+                            <button onclick="openSettingsModal()" class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors duration-200">
+                                <i class="fas fa-cog text-sm"></i>
+                            </button>
+                            <button onclick="toggleThemeDropdown()" class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors duration-200">
+                                <i class="fas fa-palette text-sm"></i>
+                            </button>
                         
                         <!-- Theme Dropdown -->
-                        <div id="theme-dropdown" class="hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-[var(--bg-color)] border border-[var(--border-color)]">
-                            <!-- Auto Theme Option (First Group) -->
-                            <div class="theme-group">
-                                <div class="theme-group-title">Auto Mode</div>
-                                <button onclick="applyTheme('auto')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
-                                    <i class="fas fa-sync-alt w-8"></i>
-                                    <span>Auto Theme</span>
+                        <div id="theme-dropdown" class="hidden absolute right-0 mt-2 w-56 rounded-xl shadow-xl bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border border-gray-200 dark:border-gray-700 max-h-96 overflow-y-auto">
+                            <!-- Auto Theme Option -->
+                            <div class="p-2">
+                                <div class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3 py-2">System</div>
+                                <button onclick="applyTheme('auto')" class="w-full px-3 py-2.5 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200 flex items-center gap-3 text-sm">
+                                    <div class="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
+                                        <i class="fas fa-sync-alt text-white text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-gray-900 dark:text-white">Auto Theme</div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400">System preference</div>
+                                    </div>
                                 </button>
                             </div>
 
                             <!-- Separator -->
-                            <div class="border-b border-[var(--border-color)]"></div>
+                            <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
 
-                            <!-- Rest of your theme groups -->
-                            <div class="theme-group">
-                                <div class="theme-group-title">Dark Themes</div>
-                                <button onclick="applyTheme('dark')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
-                                    <i class="fas fa-moon w-8"></i>
-                                    <span>Dark Theme</span>
+                            <!-- Light & Dark -->
+                            <div class="p-2">
+                                <div class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3 py-2">Basic</div>
+                                <button onclick="applyTheme('light')" class="w-full px-3 py-2.5 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200 flex items-center gap-3 text-sm">
+                                    <div class="w-8 h-8 rounded-lg bg-gradient-to-r from-yellow-400 to-orange-400 flex items-center justify-center">
+                                        <i class="fas fa-sun text-white text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-gray-900 dark:text-white">Light</div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400">Clean & bright</div>
+                                    </div>
                                 </button>
-                                <button onclick="applyTheme('dark-2')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
-                                    <i class="fas fa-circle w-8"></i>
-                                    <span>Dark Theme 2</span>
+                                <button onclick="applyTheme('dark')" class="w-full px-3 py-2.5 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200 flex items-center gap-3 text-sm">
+                                    <div class="w-8 h-8 rounded-lg bg-gradient-to-r from-gray-700 to-gray-900 flex items-center justify-center">
+                                        <i class="fas fa-moon text-white text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-gray-900 dark:text-white">Dark</div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400">Easy on the eyes</div>
+                                    </div>
                                 </button>
                             </div>
+
+                            <!-- Separator -->
+                            <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
                             
-                            <div class="theme-group">
-                                <div class="theme-group-title">Cool Colors</div>
-                                <button onclick="applyTheme('blue')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
-                                    <i class="fas fa-water w-8"></i>
-                                    <span>Blue Theme</span>
+                            <!-- Cool Themes -->
+                            <div class="p-2">
+                                <div class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3 py-2">Cool Tones</div>
+                                <button onclick="applyTheme('blue')" class="w-full px-3 py-2.5 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200 flex items-center gap-3 text-sm">
+                                    <div class="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
+                                        <i class="fas fa-water text-white text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-gray-900 dark:text-white">Ocean Blue</div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400">Professional & calm</div>
+                                    </div>
                                 </button>
-                                <button onclick="applyTheme('ocean')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
-                                    <i class="fas fa-wave-square w-8"></i>
-                                    <span>Ocean Theme</span>
+                                <button onclick="applyTheme('purple')" class="w-full px-3 py-2.5 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200 flex items-center gap-3 text-sm">
+                                    <div class="w-8 h-8 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+                                        <i class="fas fa-gem text-white text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-gray-900 dark:text-white">Purple Gem</div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400">Creative & elegant</div>
+                                    </div>
                                 </button>
-                                <button onclick="applyTheme('purple')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
-                                    <i class="fas fa-gem w-8"></i>
-                                    <span>Purple Theme</span>
+                                <button onclick="applyTheme('mint')" class="w-full px-3 py-2.5 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200 flex items-center gap-3 text-sm">
+                                    <div class="w-8 h-8 rounded-lg bg-gradient-to-r from-green-400 to-emerald-400 flex items-center justify-center">
+                                        <i class="fas fa-seedling text-white text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-gray-900 dark:text-white">Fresh Mint</div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400">Natural & refreshing</div>
+                                    </div>
                                 </button>
                             </div>
+
+                            <!-- Separator -->
+                            <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
                             
-                            <div class="theme-group">
-                                <div class="theme-group-title">Warm Colors</div>
-                                <button onclick="applyTheme('sunset')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
-                                    <i class="fas fa-sun w-8"></i>
-                                    <span>Sunset Theme</span>
+                            <!-- Warm Themes -->
+                            <div class="p-2">
+                                <div class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3 py-2">Warm Tones</div>
+                                <button onclick="applyTheme('sunset')" class="w-full px-3 py-2.5 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200 flex items-center gap-3 text-sm">
+                                    <div class="w-8 h-8 rounded-lg bg-gradient-to-r from-orange-400 to-red-400 flex items-center justify-center">
+                                        <i class="fas fa-sun text-white text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-gray-900 dark:text-white">Sunset</div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400">Warm & energetic</div>
+                                    </div>
                                 </button>
-                                <button onclick="applyTheme('rose')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
-                                    <i class="fas fa-fire w-8"></i>
-                                    <span>Rose Theme</span>
+                                <button onclick="applyTheme('amber')" class="w-full px-3 py-2.5 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200 flex items-center gap-3 text-sm">
+                                    <div class="w-8 h-8 rounded-lg bg-gradient-to-r from-amber-400 to-yellow-500 flex items-center justify-center">
+                                        <i class="fas fa-certificate text-white text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-gray-900 dark:text-white">Golden Amber</div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400">Rich & luxurious</div>
+                                    </div>
                                 </button>
-                                <button onclick="applyTheme('forest')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
-                                    <i class="fas fa-tree w-8"></i>
-                                    <span>Forest Theme</span>
-                                </button>
-                            </div>
-
-                            <!-- Special Colors section in theme dropdown -->
-                            <div class="theme-group">
-                                <div class="theme-group-title">Special Colors</div>
-                                <button onclick="applyTheme('midnight')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
-                                    <i class="fas fa-star w-8"></i>
-                                    <span>Midnight Theme</span>
-                                </button>
-                                <button onclick="applyTheme('coral')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
-                                    <i class="fas fa-fish w-8"></i>
-                                    <span>Coral Theme</span>
-                                </button>
-                                <button onclick="applyTheme('mint')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
-                                    <i class="fas fa-seedling w-8"></i>
-                                    <span>Mint Theme</span>
-                                </button>
-                                <button onclick="applyTheme('amber')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
-                                    <i class="fas fa-certificate w-8"></i>
-                                    <span>Amber Theme</span>
+                                <button onclick="applyTheme('forest')" class="w-full px-3 py-2.5 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200 flex items-center gap-3 text-sm">
+                                    <div class="w-8 h-8 rounded-lg bg-gradient-to-r from-green-600 to-green-700 flex items-center justify-center">
+                                        <i class="fas fa-tree text-white text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-gray-900 dark:text-white">Deep Forest</div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400">Earthy & grounded</div>
+                                    </div>
                                 </button>
                             </div>
 
-                            <!-- Add this new group in the theme dropdown -->
-                            <div class="theme-group">
-                                <div class="theme-group-title">Effects</div>
-                                <button onclick="toggleRainEffect()" type="button" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
-                                    <i class="fas fa-cloud-rain w-8"></i>
-                                    <span>Rain Effect</span>
-                                    <i class="fas fa-check ml-auto rain-status hidden"></i>
+                            <!-- Separator -->
+                            <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+
+                            <!-- Special Themes -->
+                            <div class="p-2">
+                                <div class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3 py-2">Special</div>
+                                <button onclick="applyTheme('midnight')" class="w-full px-3 py-2.5 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200 flex items-center gap-3 text-sm">
+                                    <div class="w-8 h-8 rounded-lg bg-gradient-to-r from-indigo-900 to-purple-900 flex items-center justify-center">
+                                        <i class="fas fa-star text-white text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-gray-900 dark:text-white">Midnight</div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400">Deep & mysterious</div>
+                                    </div>
+                                </button>
+                                <button onclick="applyTheme('cyber')" class="w-full px-3 py-2.5 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200 flex items-center gap-3 text-sm">
+                                    <div class="w-8 h-8 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 flex items-center justify-center">
+                                        <i class="fas fa-microchip text-white text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-gray-900 dark:text-white">Cyberpunk</div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400">Futuristic & bold</div>
+                                    </div>
+                                </button>
+                                <button onclick="applyTheme('sakura')" class="w-full px-3 py-2.5 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200 flex items-center gap-3 text-sm">
+                                    <div class="w-8 h-8 rounded-lg bg-gradient-to-r from-pink-400 to-rose-400 flex items-center justify-center">
+                                        <i class="fas fa-fan text-white text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-gray-900 dark:text-white">Sakura</div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400">Soft & serene</div>
+                                    </div>
                                 </button>
                             </div>
 
-                            <!-- Add this new group in the theme dropdown -->
-                            <div class="theme-group">
-                                <div class="theme-group-title">Seasonal Themes</div>
-                                <button onclick="applyTheme('nordic')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
-                                    <i class="fas fa-snowflake w-8"></i>
-                                    <span>Nordic Theme</span>
-                                </button>
-                                <button onclick="applyTheme('sakura')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
-                                    <i class="fas fa-fan w-8"></i>
-                                    <span>Sakura Theme</span>
-                                </button>
-                                <button onclick="applyTheme('cyber')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
-                                    <i class="fas fa-microchip w-8"></i>
-                                    <span>Cyber Theme</span>
-                                </button>
-                                <button onclick="applyTheme('autumn')" class="theme-option w-full px-4 py-2 text-left hover:bg-[var(--accent-light)] flex items-center">
-                                    <i class="fas fa-leaf w-8"></i>
-                                    <span>Autumn Theme</span>
+                            <!-- Separator -->
+                            <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+
+                            <!-- Effects -->
+                            <div class="p-2">
+                                <div class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3 py-2">Effects</div>
+                                <button onclick="toggleRainEffect()" type="button" class="w-full px-3 py-2.5 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200 flex items-center gap-3 text-sm">
+                                    <div class="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-400 to-indigo-500 flex items-center justify-center">
+                                        <i class="fas fa-cloud-rain text-white text-xs"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="font-medium text-gray-900 dark:text-white">Rain Effect</div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400">Animated background</div>
+                                    </div>
+                                    <i class="fas fa-check text-green-500 rain-status hidden"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- Mobile Menu Button -->
-                <div class="md:hidden">
-                    <button onclick="toggleMenu()" class="mobile-menu-btn p-2 rounded-lg transition-all duration-300">
-                        <i class="fas fa-bars text-2xl text-[var(--text-color)]"></i>
-                    </button>
-                </div>
+                    <!-- Mobile Menu Button -->
+                    <div class="md:hidden">
+                        <button onclick="toggleMenu()" class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors duration-200">
+                            <i class="fas fa-bars text-lg"></i>
+                        </button>
+                    </div>
             </div>
         </div>
 
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="md:hidden hidden bg-[var(--bg-color)]">
+        <div id="mobile-menu" class="md:hidden hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
             <!-- Theme toggles for mobile -->
             <div class="flex flex-wrap justify-center gap-3 py-4 border-b border-[var(--border-color)]">
                 <!-- Auto Theme -->
@@ -373,13 +412,16 @@
             </div>
             
             <!-- Mobile menu items -->
-            <div class="py-2">
-                <a href="#notifications" class="block text-[var(--text-color)] hover:text-[var(--accent-color)] px-4 py-2">My Alerts</a>
-                <a href="#create-alert" class="block text-[var(--text-color)] hover:text-[var(--accent-color)] px-4 py-2">Create Alert</a>
-                <a href="#use-cases" class="block text-[var(--text-color)] hover:text-[var(--accent-color)] px-4 py-2">Use Cases</a>
-                <a href="#features" class="block text-[var(--text-color)] hover:text-[var(--accent-color)] px-4 py-2">Features</a>
-                <button onclick="openSettingsModal()" class="block w-full text-left text-[var(--text-color)] hover:text-[var(--accent-color)] px-4 py-2">
-                    <i class="fas fa-cog mr-2"></i>Settings
+            <div class="py-4 space-y-2">
+                <a href="#notifications" class="block px-4 py-3 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg mx-2 transition-colors duration-200">Alerts</a>
+                <a href="#use-cases" class="block px-4 py-3 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg mx-2 transition-colors duration-200">Examples</a>
+                <a href="#features" class="block px-4 py-3 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg mx-2 transition-colors duration-200">Features</a>
+                <button onclick="openAlertModal('')" class="block w-full text-left px-4 py-3 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg mx-2 transition-colors duration-200 font-medium">
+                    Create Alert
+                </button>
+                <div class="border-t border-gray-200 dark:border-gray-700 mx-2 my-2"></div>
+                <button onclick="openSettingsModal()" class="block w-full text-left px-4 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg mx-2 transition-colors duration-200">
+                    <i class="fas fa-cog mr-2 text-sm"></i>Settings
                 </button>
             </div>
         </div>
@@ -673,113 +715,154 @@
      </div>
 
      <!-- Hero Section -->
-    <section class="pt-32 pb-24 hero-gradient hero-section relative overflow-hidden">
-        <canvas id="notification-canvas" class="absolute inset-0 z-0 w-full h-full"></canvas>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-             <div class="text-center space-y-8">
-                 <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-[var(--text-color)] mb-6 animate-slide-up">
-                     Welcome to <span class="text-[var(--accent-color)] font-extrabold">NotifyMe</span>
-                 </h1>
-                 <p class="text-xl md:text-2xl text-[var(--text-color)] max-w-3xl mx-auto mb-8 animate-slide-up opacity-80 leading-relaxed">
-                     Your eyes on the web. Don't search, get alerted. The web changes. You know first.
-                 </p>
-                <div class="animate-slide-up space-y-6">
-                    <button onclick="openAlertModal('Enter your alert description here...')" 
-                    class="btn-primary px-8 py-4 rounded-xl inline-flex items-center text-lg font-semibold bg-[var(--accent-color)] text-[var(--bg-color)] shadow-lg hover:bg-[var(--accent-dark)] hover:scale-105 transition-all duration-300 animate-pulse-slow">
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <!-- Background Elements -->
+        <div class="absolute inset-0 bg-gradient-to-br from-[var(--accent-light)]/20 via-transparent to-[var(--accent-light)]/10"></div>
+        <canvas id="notification-canvas" class="absolute inset-0 z-0 w-full h-full opacity-30"></canvas>
+        
+        <!-- Floating shapes -->
+        <div class="absolute top-20 left-10 w-20 h-20 bg-[var(--accent-color)]/10 rounded-full blur-xl animate-float"></div>
+        <div class="absolute top-40 right-20 w-32 h-32 bg-[var(--accent-color)]/5 rounded-full blur-2xl animate-float" style="animation-delay: 2s;"></div>
+        <div class="absolute bottom-40 left-20 w-24 h-24 bg-[var(--accent-color)]/8 rounded-full blur-xl animate-float" style="animation-delay: 4s;"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <div class="space-y-12">
+                <div class="space-y-6">
+                    <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-[var(--text-color)] leading-tight">
+                        Your Smart Web
+                        <span class="block bg-gradient-to-r from-[var(--accent-color)] to-[var(--hover-color)] bg-clip-text text-transparent font-extrabold">
+                            Notification Agent
+                        </span>
+                    </h1>
+                    <p class="text-xl md:text-2xl text-[var(--secondary-text)] max-w-3xl mx-auto leading-relaxed">
+                        Stop manually checking websites. Get instant alerts when anything changes.
+                        <br/>
+                        <span class="text-[var(--text-color)] font-medium">Your eyes on the web, 24/7.</span>
+                    </p>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <button 
+                        onclick="openAlertModal('')" 
+                        class="bg-[var(--accent-color)] hover:bg-[var(--accent-dark)] text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center gap-3">
+                        <i class="fas fa-plus"></i>
                         Create Your First Alert
-                        <i class="fas fa-bell ml-3"></i>
                     </button>
-                    
-                    <!-- NotebookLM Video Player -->
-                    <div class="mt-8">
-                        <div class="max-w-4xl mx-auto">
-                            <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-2xl">
-                                <div class="text-center mb-4">
-                                    <p class="text-[var(--text-color)]/75">How it works</p>
-                                </div>
-                                <div class="relative rounded-xl overflow-hidden shadow-lg">
-                                    <video 
-                                        id="demo-video"
-                                        class="w-full h-auto rounded-xl"
-                                        controls
-                                        poster=""
-                                        preload="metadata"
-                                        style="max-height: 500px; object-fit: contain;">
-                                        <source src="notebooklm.mp4" type="video/mp4">
-                                        <p class="text-[var(--text-color)] p-4 text-center">Your browser does not support the video tag. 
-                                           <a href="notebooklm.mp4" class="text-[var(--accent-color)] underline">Download the video</a> instead.
-                                        </p>
-                                    </video>
-                                </div>
-                            </div>
+                    <button class="text-[var(--secondary-text)] hover:text-[var(--text-color)] px-8 py-4 rounded-xl font-medium text-lg transition-colors duration-200 flex items-center gap-3">
+                        <i class="fas fa-play-circle"></i>
+                        Watch Demo
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto mt-16">
+                    <div class="text-center space-y-3">
+                        <div class="w-12 h-12 bg-[var(--accent-color)]/10 rounded-lg flex items-center justify-center mx-auto">
+                            <i class="fas fa-bolt text-[var(--accent-color)] text-xl"></i>
                         </div>
+                        <h3 class="font-semibold text-[var(--text-color)]">Instant Alerts</h3>
+                        <p class="text-[var(--secondary-text)] text-sm">Get notified the moment something changes</p>
+                    </div>
+                    <div class="text-center space-y-3">
+                        <div class="w-12 h-12 bg-[var(--accent-color)]/10 rounded-lg flex items-center justify-center mx-auto">
+                            <i class="fas fa-brain text-[var(--accent-color)] text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-[var(--text-color)]">AI Powered</h3>
+                        <p class="text-[var(--secondary-text)] text-sm">Smart filtering and context understanding</p>
+                    </div>
+                    <div class="text-center space-y-3">
+                        <div class="w-12 h-12 bg-[var(--accent-color)]/10 rounded-lg flex items-center justify-center mx-auto">
+                            <i class="fas fa-shield-alt text-[var(--accent-color)] text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-[var(--text-color)]">Reliable</h3>
+                        <p class="text-[var(--secondary-text)] text-sm">Never miss important updates again</p>
                     </div>
                 </div>
-             </div>
+            </div>
         </div>
     </section>
 
 
      <!-- Use Cases Section -->
-     <section id="use-cases" class="py-20 bg-[var(--bg-color)]">
+     <section id="use-cases" class="py-24 bg-[var(--bg-color)]">
          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-             <div class="text-center mb-16">
-                 <h2 class="text-4xl md:text-5xl font-bold text-[var(--text-color)] mb-4">Use Cases & Examples</h2>
-                 <div class="w-32 h-1 bg-[var(--accent-color)] mx-auto rounded-full"></div>
-                 <p class="text-xl md:text-2xl text-[var(--text-color)] mt-4 opacity-80 max-w-3xl mx-auto">
-                     Discover powerful ways to stay informed about what matters most to you.
+             <div class="text-center mb-20">
+                 <div class="inline-flex items-center px-4 py-2 bg-[var(--accent-color)]/10 text-[var(--accent-color)] rounded-full text-sm font-medium mb-4">
+                     <i class="fas fa-lightbulb mr-2"></i>
+                     Popular Use Cases
+                 </div>
+                 <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-[var(--text-color)] mb-6 leading-tight">
+                     Monitor What Matters
+                 </h2>
+                 <p class="text-xl md:text-2xl text-[var(--secondary-text)] max-w-4xl mx-auto leading-relaxed">
+                     From stock prices to news updates, set up intelligent alerts for the content you care about.
                  </p>
              </div>
              <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
                  <!-- Stock Alerts -->
-                 <div class="bg-[var(--bg-color)] p-6 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border border-[var(--border-color)]">
-                     <div class="flex flex-col items-center text-center space-y-4">
-                         <div class="w-14 h-14 bg-[var(--accent-color)]/10 rounded-full flex items-center justify-center">
-                             <i class="fas fa-chart-line text-[var(--accent-color)] text-2xl"></i>
+                 <div class="group bg-gradient-to-br from-[var(--bg-color)] to-green-50/20 p-8 rounded-3xl shadow-xl hover:shadow-2xl transform hover:-translate-y-4 transition-all duration-500 border border-green-200/30 hover:border-green-400/50 backdrop-blur-sm relative overflow-hidden">
+                     <div class="absolute inset-0 bg-gradient-to-br from-green-400/5 to-emerald-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                     <div class="flex flex-col items-center text-center space-y-6 relative z-10">
+                         <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                             <i class="fas fa-chart-line text-white text-2xl"></i>
                          </div>
-                         <h3 class="text-xl md:text-2xl font-bold text-[var(--text-color)]">📈 Stock Alerts</h3>
-                         <p class="text-[var(--text-color)] opacity-80 leading-relaxed">
+                         <h3 class="text-2xl font-bold text-[var(--text-color)] group-hover:text-green-600 transition-colors duration-300">📈 Stock Alerts</h3>
+                         <p class="text-[var(--text-color)] opacity-80 leading-relaxed text-lg">
                              Get notified when Tesla stock crosses $10K or when there's a big drop in Google stock.
                          </p>
+                         <div class="text-sm text-green-600 font-medium opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                             Real-time market tracking →
+                         </div>
                      </div>
                  </div>
 
                  <!-- News & Updates -->
-                 <div class="bg-[var(--bg-color)] p-6 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border border-[var(--border-color)]">
-                     <div class="flex flex-col items-center text-center space-y-4">
-                         <div class="w-14 h-14 bg-[var(--accent-color)]/10 rounded-full flex items-center justify-center">
-                             <i class="fas fa-newspaper text-[var(--accent-color)] text-2xl"></i>
+                 <div class="group bg-gradient-to-br from-[var(--bg-color)] to-blue-50/20 p-8 rounded-3xl shadow-xl hover:shadow-2xl transform hover:-translate-y-4 transition-all duration-500 border border-blue-200/30 hover:border-blue-400/50 backdrop-blur-sm relative overflow-hidden">
+                     <div class="absolute inset-0 bg-gradient-to-br from-blue-400/5 to-indigo-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                     <div class="flex flex-col items-center text-center space-y-6 relative z-10">
+                         <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                             <i class="fas fa-newspaper text-white text-2xl"></i>
                          </div>
-                         <h3 class="text-xl md:text-2xl font-bold text-[var(--text-color)]">📰 News Updates</h3>
-                         <p class="text-[var(--text-color)] opacity-80 leading-relaxed">
+                         <h3 class="text-2xl font-bold text-[var(--text-color)] group-hover:text-blue-600 transition-colors duration-300">📰 News Updates</h3>
+                         <p class="text-[var(--text-color)] opacity-80 leading-relaxed text-lg">
                              Stay updated when OpenAI uploads new videos or breaking tech news happens.
                          </p>
+                         <div class="text-sm text-blue-600 font-medium opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                             Stay ahead of the curve →
+                         </div>
                      </div>
                  </div>
 
                  <!-- Legal & Policy -->
-                 <div class="bg-[var(--bg-color)] p-6 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border border-[var(--border-color)]">
-                     <div class="flex flex-col items-center text-center space-y-4">
-                         <div class="w-14 h-14 bg-[var(--accent-color)]/10 rounded-full flex items-center justify-center">
-                             <i class="fas fa-gavel text-[var(--accent-color)] text-2xl"></i>
+                 <div class="group bg-gradient-to-br from-[var(--bg-color)] to-purple-50/20 p-8 rounded-3xl shadow-xl hover:shadow-2xl transform hover:-translate-y-4 transition-all duration-500 border border-purple-200/30 hover:border-purple-400/50 backdrop-blur-sm relative overflow-hidden">
+                     <div class="absolute inset-0 bg-gradient-to-br from-purple-400/5 to-violet-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                     <div class="flex flex-col items-center text-center space-y-6 relative z-10">
+                         <div class="w-16 h-16 bg-gradient-to-br from-purple-400 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                             <i class="fas fa-gavel text-white text-2xl"></i>
                          </div>
-                         <h3 class="text-xl md:text-2xl font-bold text-[var(--text-color)]">📜 Legal Updates</h3>
-                         <p class="text-[var(--text-color)] opacity-80 leading-relaxed">
+                         <h3 class="text-2xl font-bold text-[var(--text-color)] group-hover:text-purple-600 transition-colors duration-300">📜 Legal Updates</h3>
+                         <p class="text-[var(--text-color)] opacity-80 leading-relaxed text-lg">
                              Get alerted about new tax policies or laws that affect your business.
                          </p>
+                         <div class="text-sm text-purple-600 font-medium opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                             Stay legally compliant →
+                         </div>
                      </div>
                  </div>
 
                  <!-- Weather & Environment -->
-                 <div class="bg-[var(--bg-color)] p-6 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border border-[var(--border-color)]">
-                     <div class="flex flex-col items-center text-center space-y-4">
-                         <div class="w-14 h-14 bg-[var(--accent-color)]/10 rounded-full flex items-center justify-center">
-                             <i class="fas fa-cloud-rain text-[var(--accent-color)] text-2xl"></i>
+                 <div class="group bg-gradient-to-br from-[var(--bg-color)] to-cyan-50/20 p-8 rounded-3xl shadow-xl hover:shadow-2xl transform hover:-translate-y-4 transition-all duration-500 border border-cyan-200/30 hover:border-cyan-400/50 backdrop-blur-sm relative overflow-hidden">
+                     <div class="absolute inset-0 bg-gradient-to-br from-cyan-400/5 to-teal-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                     <div class="flex flex-col items-center text-center space-y-6 relative z-10">
+                         <div class="w-16 h-16 bg-gradient-to-br from-cyan-400 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                             <i class="fas fa-cloud-rain text-white text-2xl"></i>
                          </div>
-                         <h3 class="text-xl md:text-2xl font-bold text-[var(--text-color)]">🌦️ Weather Alerts</h3>
-                         <p class="text-[var(--text-color)] opacity-80 leading-relaxed">
+                         <h3 class="text-2xl font-bold text-[var(--text-color)] group-hover:text-cyan-600 transition-colors duration-300">🌦️ Weather Alerts</h3>
+                         <p class="text-[var(--text-color)] opacity-80 leading-relaxed text-lg">
                              Be notified about rain between 10-12 PM on weekdays or severe weather conditions.
                          </p>
+                         <div class="text-sm text-cyan-600 font-medium opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                             Weather-ready always →
+                         </div>
                      </div>
                  </div>
 
@@ -813,13 +896,18 @@
     </section>
 
      <!-- Features Section -->
-     <section id="features" class="py-20 bg-[var(--bg-color)]">
+     <section id="features" class="py-24 bg-gradient-to-b from-[var(--bg-color)] to-[var(--accent-light)]/5">
          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-             <div class="text-center mb-16">
-                 <h2 class="text-4xl md:text-5xl font-bold text-[var(--text-color)] mb-4">Agent Capabilities</h2>
-                 <div class="w-32 h-1 bg-[var(--accent-color)] mx-auto rounded-full"></div>
-                 <p class="text-xl md:text-2xl text-[var(--text-color)] mt-4 opacity-80 max-w-3xl mx-auto">
-                     Powerful features that make NotifyMe your intelligent web monitoring assistant.
+             <div class="text-center mb-20">
+                 <div class="inline-flex items-center px-4 py-2 bg-[var(--accent-color)]/10 text-[var(--accent-color)] rounded-full text-sm font-medium mb-4">
+                     <i class="fas fa-cogs mr-2"></i>
+                     Core Features
+                 </div>
+                 <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-[var(--text-color)] mb-6 leading-tight">
+                     Intelligent Monitoring
+                 </h2>
+                 <p class="text-xl md:text-2xl text-[var(--secondary-text)] max-w-4xl mx-auto leading-relaxed">
+                     Advanced capabilities that make NotifyMe the smartest way to stay informed about web changes.
                  </p>
              </div>
              <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
